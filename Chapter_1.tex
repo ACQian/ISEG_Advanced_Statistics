@@ -339,6 +339,49 @@ Useful \textbf{results}:
     \item Slutsky theorem
 \end{itemize}
 
+\subsection{Notions of convergence}
+If $\{X_n\}_{n=1}^{\infty}$ is a sequence of random variables and $X$ is a random variable,
+\begin{equation*}
+    \begin{split}
+        X_n : &\underbrace{\Omega}_{\text{exists probability, $\sigma$-algebra}}\to\bbR\\
+        &X_n\longrightarrow X \qquad \text{as } n\rightarrow +\infty
+    \end{split}     
+\end{equation*}
+$n$ can be population size, or can be the number of iterations for Monte Carlo simulation.\\
+
+Notions of \textbf{convergence}: let $f_n, f : [0,1]\to\bbR$
+    \begin{itemize}
+        \item Point wise convergence: $f_n(x)\to f(x)$ for all $x\in[0,1]$
+        \item Uniform convergence: $\displaystyle\sup_{x\in[0,1]}|f_n(x)-f(x)|\to 0$
+        \item Convergence in $L^P$: $\displaystyle\int_{0}^{1}|f_n(x)-f(x)|^P\, dx\to 0$
+        \item Convergence in measure: $\mu(A_{n,\epsilon})\to 0$ for all $\epsilon>0$ where $A_{n,\epsilon}=\{x\in[0,1] : |f_n(x)-f(x)|>\epsilon\}$
+    \end{itemize}
+
+\ex[]{}{
+    $f_n : [0,1]\to\bbR$\\
+
+    $\displaystyle f_n(x)=
+    \begin{cases}
+        0 & 1/n \leq x \leq 1\\
+        n-n^2 x & 0\leq x < 1/n
+    \end{cases}$\bigskip\\
+
+    \includegraphics[scale=0.2]{Images/1.jpg} As $n\to\infty$, a becomes smaller, b becomes bigger.\\
+
+    \begin{itemize}
+        \item Point wise convergence
+            \begin{equation*}
+                \forall x\in [0,1]\\
+                
+                \forall x^* > 0, f_n(x^*)=0\qquad\text{for } n>N\qquad\text{except } f_n(0)=0 \to\infty\\
+
+            \end{equation*}
+        \item Uniform convergence
+        \item Convergence in $L^1$
+        \item Convergence in measure
+    \end{itemize}
+}
+
 \section{Important asymptotic results}
 
 \begin{itemize}
