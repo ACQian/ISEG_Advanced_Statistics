@@ -134,20 +134,276 @@ Statistics are random variables, as usual, it is important to distinguish betwee
 \end{center}
 
 \section{Sampling distribution}
+The sampling distribution of a statistic corresponds to its probability distribution: as $(X_1,\ldots,X_n)$ varies according to its distribution,
+what is the resulting probabilistic behavior of $T(X_1,\ldots,X_n)$. In classical inference, it is important to know the sampling distribution of statistics 
+because that is necessary to evaluate the performance of statistical methodologies. The \textbf{objective} is to determine aspects of the sampling distribution
+of a statistic $T$ knowing aspects of the probability distribution of the poopulation $X$.\\
+
+There are different methods to obtain the sampling distribution of a statistic.
 \begin{itemize}
-    \item Definition
-    \item Methods to obtain the sampling distribution of a statistic
-        \begin{itemize}
-            \item Monte Carlo simulation
-        \end{itemize}
-    \item Sample distribution of the sample moments
-        \begin{itemize}
-            \item Sample moments
-            \item Properties of the sample mean
-            \item Properties of the sample variance
-            \item Properties of the bias-corrected sample variance
-            \item Properties of central sample moments
-            \item Asymptotic distribution of $\bar{X}$
-        \end{itemize}
-    \item Order statistics
+    \item \textbf{Change of variable}: If $X$ is continuous,
+        \begin{equation*}
+            F_T(t|\theta) = P(T\leq t|\theta) = \int_{A(t)}\sum_{i=1}^{n}f(x_i|\theta)\, dx_1\ldots dx_n
+        \end{equation*}
+        where $A(t)=\{(x_1,\ldots,x_n)\in\bbR^n : T(x_1,\ldots,x_n)\leq t\}$. If $X$ is discrete, replace integrals with sums.
+    \item Determining the \textbf{moment generating function} of $T$
+    \item Using \textbf{well-known properties} of the distribution of $X$
+    \item \textbf{Asymptotic approximations} to the sampling distribution of certain statistics (from CLT and related results)
+    \item Using \textbf{simulations}
 \end{itemize}
+\ex[]{Change of variable}{
+    Let $T = \sum_{i=1}^{n}X_i$
+    \begin{itemize}
+        \item If $(X_1,\ldots,X_n)$ is am iid random sample from a $Po(\lambda)$ population, since the sum of independent Poisson is still Poisson,
+            we have $T\sim Po(n\lambda)$, hence $f_T(t|\lambda)= e^{-n\lambda}\frac{(n\lambda)^t}{t!},\, t\in N_0$.
+        \item If $(X_1,\ldots,X_n)$ is an iid random sample from a $N(\mu,\sigma^2)$ population, then $T\sim N(n\mu, n\sigma^2)$.
+        \item If $(X_1,\ldots,X_n)$ is an iid random sample from a $B(1,\theta)$ population, then $T\sim B(n,\theta)$.
+    \end{itemize}
+}
+\ex[]{Monte Carlo simulation}{
+    \begin{enumerate}
+        \item Draw $N$ independent samples of size $n$ from the distribution of $X$
+        \item For each of those samples, comptute the observed values of the statistic $T$
+        \item The $N$ resulting numbers, $(t_1,\ldots,t_n)$ constitute a sample of size $N$ drawn from the sampling distribution of $T$
+    \end{enumerate}
+}
+
+\subsection{Sample distribution of the sample moments}
+\dfn[]{Sample moments}{
+    Let $(X_1,\ldots,X_n)$ be an iid random sample of size $n$ from a population $X$. 
+    For $k\in\bbN$ we define the $k$th raw sample moment as
+    \begin{equation*}
+        M'_k=\frac{1}{n}\sum_{i=1}^{n}x_i^k
+    \end{equation*}
+    and the $k$th central sample moment by
+    \begin{equation*}
+        M_k = \frac{1}{n}\sum_{i=1}^{n}(X_i-\bar{X})^k
+    \end{equation*}
+}
+$\begin{cases*}
+    \mu'_k = E[x^k] \to k\text{th raw moment}\\
+    M'_k = \frac{1}{n}\sum x_i^k\to k\text{th sample raw moment}
+\end{cases*}$ 
+$\begin{cases*}
+    \mu_k = E[(x-\mu)^k] \to k\text{th central moment}\\
+    M_k = \frac{1}{n}\sum (x_i-\bar{x})^k\to k\text{th central sample moment}
+\end{cases*}$\\
+We want to observe how they behave in relation to each other.\\
+
+Once again, it is important to distinguish the \textbf{sample moments}, $M'_k$ and $M_k$,
+from the \textbf{population momnets}, $\mu'_k = E[X^k]$ and $\mu_k = E[(X-E[X])^k]$,
+and the \textbf{observed sample moments}, $m'_k = \frac{1}{n}\sum_{i=1}^{n}x_i^k$ and $m_k = \frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})^k$.
+
+\nt{
+    \textbf{Important special cases: }$\bar{X} = M'_1$ and $S^2 = M_2$, the sample mean and the sample variance.
+}
+
+\thm[]{Properties of the sample mean}{
+    If all the moments exist, then
+    \begin{align*}
+        E[\bar{X}] & = E[X] = \mu\\
+        Var(\bar{X}) & = \frac{Var(X)}{n} = \frac{\sigma^2}{n}\\
+        \mu_3 & = \frac{\mu_3}{n^2}\\
+        \mu_4 & = \frac{3\mu_2^2}{n^2} + \frac{\mu_4-3\mu_2^2}{n^3}
+    \end{align*}
+}
+\begin{proof}
+    \textbf{$E[\bar{X}]$}
+    \begin{equation*}
+        E[\bar{X}] = \frac{1}{n}\sum_{i=1}^{n}E[x_i] = \frac{1}{n}n\mu = \mu
+    \end{equation*}
+\end{proof}
+\begin{proof}
+    $Var(\bar{X})$
+    \begin{align*}
+        Var(\bar{X}) & = E[(\bar{X}-\mu)^2]\\
+        & = E[(\frac{1}{n}\sum x_i-\mu)^2]\\
+        & = E[\frac{1}{n^2}(\sum(x_i-\mu))^2]\\
+        & = \frac{1}{n^2}E[\overbrace{(\sum \underbrace{a_i}_{= x_i-\mu})^2}^{\text{Annex 1}}]\\
+        & = \otimes
+    \end{align*}
+    Annex 1: $(\sum a_i)^2 = (\sum_i a_i)(\sum_j a_j) = \sum_i \sum_j a_ia_j = \sum_i a_i^2 + \sum_i \sum_{i\neq j}a_ia_j \qquad\square$
+    \begin{align*}
+        \otimes & = \frac{1}{n^2}[E[\sum_i a_i^2] + E[\sum_i \sum_{i\neq j}a_ia_j]]\\
+        & = \frac{1}{n^2}[\sum_i \underbrace{E[a_i^2]}_{E[(X-\mu)^2] = Var(X) = \sigma^2} + \sum_i \sum_{i\neq j}\underbrace{E[a_ia_j]}_{\text{Cov}(a_i,a_j) = 0\to\text{ Annex 2}}]\\
+        & = \frac{1}{n^2}(n\sigma^2 + 0)\\
+        & = \frac{\sigma^2}{n}
+    \end{align*}
+    Annex 2: Since $a_i\ind a_j$, expectation of the product is the product of the expectation for independent variables.
+    This implies that $E[(x_i-\mu)(x_j-\mu)] = E[(x_i-\mu)]E[(x_j-\mu)] = 0\times 0 = 0$
+\end{proof}
+By the \textbf{Weak Law of Large Numbers}, $\bar{X}\overset{P}{\to}\mu$. The distribution is more and more concentrated around $\mu$ as $n$ increases. 
+The distribution of $\bar{X}$ is centered around $\mu$ and $\lim_{n\to+\infty}Var(\bar{X}) = 0$.
+\begin{proof}
+    Asymmetry $\mu_3$
+    \begin{equation*}
+        \mu_3(\bar{X}) = E[(\bar{X}-\mu)^3] = \frac{1}{n^3}E[\underbrace{(\sum a_i)^3}_{\text{Annex 1}}] = \otimes
+    \end{equation*}
+    Annex 1: 
+    \begin{align*}
+        (\sum a_i)^3 & = (\sum_i a_i)(\sum_j a_j)(\sum_k a_k) = \sum_i\sum_j\sum_k a_ia_ja_k\\
+        & = (\sum a_i)^2(\sum_k a_k) = (\sum_i a_i^2 + \sum_i\sum_{i\neq j}a_ia_j)(\sum_k a_k)\\
+        & = \sum_i\sum_k a_i^2 a_k + \sum_i\sum_{i\neq j}\sum_k a_ia_ja_k\\
+        & = \sum_i a_i^3 + \underbrace{\sum_i\sum_{k\neq i}a_i^2 a_k}_{E[\cdot]=0} + \underbrace{\sum_i\sum_{j\neq i}\sum_{k\neq i}a_ia_ja_k}_{E[\cdot]=0}
+        + \underbrace{\sum_i\sum_{j\neq i}a_i^2 a_j}_{E[\cdot]=0}\qquad\square
+    \end{align*}
+    \begin{equation*}
+        \otimes = \frac{1}{n^3}\sum_{i=1}^{n}E[(x_i-\mu)^3] = \frac{1}{n^3}n\mu_3 = \frac{\mu_3}{n^2}\xrightarrow{n\to\infty} 0
+    \end{equation*}
+\end{proof}
+As $n$ goes to infinity, the distribution becomes symmetric. This evidence is compatible with the \textbf{Central Limit Theorem}.
+The related concept to asymmetry is \textbf{skewness}, $\gamma_1 = \frac{\mu_3}{\sigma^3}$. 
+$\sigma^3$ is used to make $\gamma_1$ dimensionless, as in independent of the unit measurement of the $x$.\\
+
+The commonly used concept related to $\mu_4$ is \textbf{kurtosis} which is often denoted as $\gamma_2 = \frac{\mu_4}{\sigma^4}$. 
+It is the indication of heavy tails. If $\gamma_2 > 3$, the distribution has a heavier tail than Gaussian.
+The excess kurtosis can also be used which is just $\gamma_2 - 3$, indicating heavier tail than Gaussian if bigger than 0.
+\begin{proof}
+    Kurtosis $\gamma_2$
+    \begin{align*}
+        \gamma_2(\bar{X}) & = \frac{\mu_4(\bar{X})}{\underbrace{\sigma_{(\bar{X})}^4}_{\text{s.d. to the power of 4}}} = \frac{\frac{3\mu_2^2}{n^2}+\frac{\mu_4-3\mu_2^2}{n^3}}{(\sqrt{\frac{\sigma^2}{n}})}\\
+        & = \frac{\frac{3\mu_2^2}{n^2}+\frac{\mu_4-3\mu_2^2}{n^3}}{(\frac{(\sigma^2)^2}{n^2})} \overset{\mu_2 = \sigma^2}{=} \frac{\frac{3\mu_2^2}{n^2}+\frac{\mu_4-3\mu_2^2}{n^3}}{(\frac{(\mu_2)^2}{n^2})}\\
+        & = 3 + \frac{1}{n}\underbrace{\frac{\mu_4-3\mu_2^2}{\mu_2^2}}_{\text{A}}\xrightarrow{n\to\infty} 3
+    \end{align*}
+    A: $\frac{\mu_4}{\mu_2^2}-\frac{3\mu_2^2}{\mu_2^2} = \frac{\mu_4}{\sigma^4}-3 \to \gamma_2 - 3 \Rightarrow$ excess kurtosis.\\
+\end{proof}
+
+\thm[]{Properties of the sample variance}{
+    If all the moments exist,
+    \begin{align*}
+        E[S^2] & = \frac{n-1}{n}\sigma^2\\
+        Var(S^2) & = \frac{\mu_4-\mu_2^2}{n}-2\frac{\mu_4-2\mu_2^2}{n^2}+\frac{\mu_4-3\mu_2^2}{n^3} \xrightarrow{n\to\infty} 0\text{ , roughtly centered around }S^2
+    \end{align*}
+}
+Since $E[S^2] = \frac{n-1}{n}\sigma^2 < \sigma^2$, always strictly smaller than the variance, we define the \textbf{bias-corrected sample variance}
+\begin{equation*}
+    S'^2 = \frac{1}{n-1}\sum_{i=1}^{n}(X_i-\bar{X})^2 = \frac{n}{n-1}S^2
+\end{equation*}
+Notice that $M'_k = \frac{1}{n}\sum X_i^k$ which is the average of iid r.v. but $M_k = \frac{1}{n}\sum (X_i-\bar{X})^k$.
+We cannot use LLN or CLT to study $M_k$ becuase $(X_i-\bar{X})$ and $(X_j-\bar{X})$ for $i\neq j$ are not iid as $\bar{X}$ depends on both $X_i$ and $X_j$.
+
+\thm[]{Properties of the bias-corrected sample variance}{
+    If all the moments exist,
+    \begin{align*}
+        E[S'^2] & = \sigma^2\\
+        Var(S'^2) & = \frac{1}{n}(\mu_4 - \frac{n-3}{n-1}\mu_2^2)
+    \end{align*}
+}
+\begin{proof}
+    $E[S'^2]$
+    \begin{align*}
+        S'^2 & = \frac{nS^2}{n-1}\\
+        E[S'^2] & = \frac{n}{n-1}E[S^2] = \frac{n}{n-1}\frac{n-1}{n}\sigma^2 = \sigma^2
+    \end{align*}
+\end{proof}
+
+\thm[]{Properties of central sample moments}{
+    If all the moments exist,
+    \begin{align*}
+        E[M_k] & = \mu_k + \mcO(\frac{1}{n})\\
+        Var(S'^2) & = \frac{c}{n} + \mcO(\frac{1}{n^2})
+    \end{align*}
+    where $c$ is a constant which involves central population moments of order $\leq 2k$.
+}
+The central sample moments have similar behavior as $S^2$.
+\begin{align*}
+    a_n & = \mcO(b_n) \Leftrightarrow \frac{a_n}{b_n} \text{ is limited}\\
+    a_n & = \mcO(\frac{1}{n}) \Leftrightarrow \frac{a_n}{\frac{1}{n}} \text{ is limited} = na_n\\
+    a_n & = \underbrace{\frac{1}{n}}_{\to 0}\underbrace{na_n}_{\text{limited}} \to 0\\
+    & \Rightarrow \mcO(\frac{1}{n}) \text{ sequence goes to 0 roughtly at the rate of }\frac{1}{n}
+\end{align*}
+
+\thm[]{Asymptotic distribution of $\bar{X}$}{
+    As long as $Var(X)$ is finite, we have as a direct consequence of the \textbf{Central limit theorem} that
+    \begin{equation*}
+        \frac{\bar{X}-\mu}{\frac{\sigma}{\sqrt{n}}} = \sqrt{n}\frac{\bar{X}-\mu}{\sigma}\xrightarrow{d}N(0,1)
+    \end{equation*}
+}
+This result is typically used in the form
+\begin{equation*}
+    P(\bar{X}\leq x)\approx \Phi\left(\sqrt{n}\frac{x-\mu}{\sigma}\right)
+\end{equation*}
+that is, $\bar{X}\overset{a}{\sim}N(\mu,\frac{\sigma^2}{n})$.\\
+
+In general, unimodality and symmetry have a positive impact on the speed of convergence. If the distribution is already behaving like normal, the rate of convergence would be faster.
+
+\subsection{Order statistics}
+\dfn[]{Order statistics}{
+    Let $(X_1,\ldots,X_n)$ be an iid random sample. The $i$th order statistic is denoted by $X_{(i)}$ and satisfies
+    \begin{equation*}
+        \underbrace{X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}}_{\text{not iid}}
+    \end{equation*}
+}
+Order statistics are not iid because if we know $X_{(n)}$ is 10, then $X_{(1)}$ cannot be larger than 10. 
+For notation purposes, $(Y_1, \ldots,Y_n) \equiv (X_{(1)},\ldots,X_{(n)})$.\\
+
+The order statistics have a joint pdf given by
+\begin{equation*}
+    g(y_1,y_2,\ldots,y_n) = n!\prod_{i=1}^{n}f(y_i)\qquad \text{if } y_1 < y2 < \ldots < y_n
+\end{equation*}
+If $u>v$, the joint pdf of $(Y_u,Y_v)$ is
+\begin{equation*}
+    g_{u,v}(y,z) = \frac{n!}{(u-1)!(v-u-1)!(n-v)!}\times[F(y)]^{u-1}[F(z)-F(y)]^{v-u-1}[1-F(z)]^{n-v}f(y)f(z)\quad \text{if }y<z
+\end{equation*}
+The cdf of $Y_v$ is
+\begin{equation*}
+    g_v(y) = \frac{n!}{(v-1)!(n-v)!}[F(y)]^{v-1}[1-F(y)]^{n-v}f(y) = G'_v(y)
+\end{equation*}
+and the pdf of $Y_v$ is
+\begin{equation*}
+    G_v(y) = \sum_{j=v}^{n}\left(\begin{array}{c}
+    n\\j\end{array}\right)[F(y)]^j[1-F(y)]^{n-j} = P(Y_v\leq y)
+\end{equation*}
+
+\thm[]{Important special cases : the maximum and the minimum}{
+    The pdf and the cdf of the minimum and the maximum are
+    \begin{align*}
+        G_1(y) & = 1- [1-F(y)]^n & g_1(y) & = n\, f(y)[1-F(y)]^{n-1}\\
+        G_n(y) & = [F(y)]^n & g_n(y) & = n\, f(y)[F(y)]^{n-1}\\
+    \end{align*}
+    with the joint cdf of
+    \begin{equation*}
+        g_{1,n}(y,z)=n(n-1)[F(z)-F(y)]^{n-2}f(y)f(z)\qquad y<z
+    \end{equation*}
+}
+\begin{proof}
+    $G_n(y)$
+    \begin{align*}
+        G_n(y) & = P(Y_n\leq y) = P(X_{(n)}\leq y)\\
+        & = P(X_{(1)}\leq y,\ldots, X_{(n)}\leq y) \to \text{Annex 1}\\
+        & = P(X_{(1)}\leq y)\,P(X_{(2)}\leq y)\cdots P(X_{(n)}\leq y)\quad \text{because }x_i\ind x_j, i\neq j\\
+        & = [F(y)]^n\quad \text{because iid}
+    \end{align*}
+
+    Annex 1: If $X_{(n)}\leq y\Leftrightarrow X_{(1)}\leq y,\ldots, X_{(n)}\leq y$\\
+
+    $g_n(y) = G'_n(y)$ if continuous\\
+\end{proof}
+\begin{proof}
+    $G_n(y)$\\
+
+    The idea is that
+    \begin{equation*}
+        X_{(1)}\leq y \Leftrightarrow \exists_i X_i \leq y
+    \end{equation*}
+    Thus we can write
+    \begin{align*}
+        G_1(y) & = P(X_{(1)}\leq y) = P(\exists_i X_i\leq y)\\
+        & = P(\overline{\forall_i X_i>y}) = 1-P(\forall X_i>y)\\
+        & = 1 - P(X_{(1)}>y, \ldots, X_{(n)}>y) = 1 - P(X_{(1)}>y)\cdots P(X_{(n)}>y) \quad \text{because }x_i\ind x_j, i\neq j\\
+        & = 1 - [1-F(y)]^n \quad \text{because iid}
+    \end{align*}
+\end{proof}
+
+
+%\dfn{Definition Topic}{Definition Statement}
+%\thm{Theorem Name}{Theorem Statement}
+%\cor[cori]{Corollary Name}{Corollary Statement}
+%\lem{Lemma Name}{Lemma Statement}
+%\clm{Claim Name}{Claim Statement}
+%\ex{Example Name}{Example explained}
+%\opn{Open Question Name}{Question Statement}
+%\pr{Question Name}{Question Statement}
+%\nt{Special Note}
+%\wc{Wrong Concept topic}{Explanation}
+%\proof{Proof Idea}{}
