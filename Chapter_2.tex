@@ -380,7 +380,7 @@ and the pdf of $Y_v$ is
     $g_n(y) = G'_n(y)$ if continuous\\
 \end{proof}
 \begin{proof}
-    $G_n(y)$\\
+    $G_1(y)$\\
 
     The idea is that
     \begin{equation*}
@@ -392,6 +392,21 @@ and the pdf of $Y_v$ is
         & = P(\overline{\forall_i X_i>y}) = 1-P(\forall X_i>y)\\
         & = 1 - P(X_{(1)}>y, \ldots, X_{(n)}>y) = 1 - P(X_{(1)}>y)\cdots P(X_{(n)}>y) \quad \text{because }x_i\ind x_j, i\neq j\\
         & = 1 - [1-F(y)]^n \quad \text{because iid}
+    \end{align*}
+\end{proof}
+\begin{proof}
+    $g_{1,n}(y,z)$
+    \begin{align*}
+        G_n(y) & = G_{1,n}(x,y) + P(x<X_i\leq y, \forall i)\\
+        & = G_{1,n}(x,y) + \underbrace{[F[(y) - F(x)]^n}_{P(a<X\leq b) = F(b)-F(a)}\quad \text{justified through \textbf{total probability theorm}}\\
+        \Leftrightarrow [F(y)]^n & = G_{1,n}(x,y) + [F(y)-F(x)]^n\\
+        \Leftrightarrow G_{1,n}(x,y) & = [F(y)]^n - [F(y)-F(x)]^n \, ,x<y
+    \end{align*}
+    The cumulative distribution function is just the derivative relative to both variables, so
+    \begin{align*}
+        g_{1,n}(x,y) & = \frac{\partial^2}{\partial y\partial x}G_{1,n}(x,y)\\
+        & = \frac{\partial}{\partial y}[0-n(-f(x))[F(y)-F(x)]^{n-1}]\\
+        & = nf(x)(n-1)f(y)[F(y)-F(x)]^{n-2}\, ,n>2
     \end{align*}
 \end{proof}
 
