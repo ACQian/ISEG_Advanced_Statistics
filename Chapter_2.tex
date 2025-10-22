@@ -355,6 +355,74 @@ and the pdf of $Y_v$ is
     n\\j\end{array}\right)[F(y)]^j[1-F(y)]^{n-j} = P(Y_v\leq y)
 \end{equation*}
 
+\begin{proof}
+    The joint distribution of $G_{u,v}(y,z)$ follows a \textbf{multinomial distribution} with the following characteristics:
+    \begin{itemize}
+        \item $n$ objects
+        \item $k$ categories
+        \item The probability that each object belongs to category $i$ is $p_i$, $i=1,\ldots,k$ independently
+        \item $w_i$ is the number of objects among the $n$ that belongs to class $i$, $i=1,\ldots,k$
+    \end{itemize}
+    \begin{align*}
+        G_{u,v}(y,z) & = P(Y_u\leq y, Y_v\leq z)\\
+        g_{u,v}(y,z) & = \frac{\partial^2 G(y,z)}{\partial y\partial z} = \lim_{\delta_1\to0^+,\delta_2\to0^+}P(y<y_u\leq y+\delta_1, z<y_v\leq z+\delta_2)
+    \end{align*}
+    This is a multinomial with 5 classes:
+    \begin{equation*}
+        \begin{cases*}
+            P_1 = F(y)\\
+            P_2 = P(y<x\leq y+\delta_1) = F(y+\delta_1)-F(y)\\
+            P_3 = F(z)-F(y+\delta_1)\\
+            P_4 = P(z<x\leq z+\delta_2) = F(z+\delta_2)-F(z)\\
+            P_5 = 1-F(z+\delta_2)
+        \end{cases*}
+    \end{equation*}
+    with \begin{equation*}
+        \begin{cases*}
+            w_1 = u-1\\
+            w_2 = 1\\
+            w_3 = v-u-1\to\text{Annex 1}\\
+            w_4 = 1\\
+            w_5 = n-v
+        \end{cases*}
+    \end{equation*}
+    Annex 1: $n = u-1+1+1+n-v+w_3\Leftrightarrow n=u+1+n-v+w_3\Leftrightarrow w_3=n-u-1-n+v=v-u-1$\\
+    where \begin{equation*}
+        P(y<Y_u\leq y+\delta_1, z<Y_v\leq z+\delta_2) = \frac{n!}{(u-1)!1!(v-u-1)!1!(n-v)!}P_1^{u-1}P_2^1 P_3^{v-u-1} P_4^1 P_5^{n-v}
+    \end{equation*}
+    thus,
+    \begin{align*}
+        g_{u,v}(y,z) & = \lim_{\delta_1\to0^+,\delta_2\to0^+}\frac{n!}{(u-1)!(v-u-1)!(n-v)!}[F(y)]^{u-1}[F(y+\delta_1)-F(y)]\\
+        & \times [F(z)-F(y+\delta_1)]^{v-u-1}[F(z+\delta_2)-F(z)][1-F(z+\delta_2)]^{n-v}\\
+        & = \frac{n!}{(u-1)!(v-u-1)!(n-v)!}[F(y)]^{u-1}[F(z)-F(y)]^{v-u-1}[1-F(z)]^{n-v}\\
+        & \times \underbrace{\lim_{\delta_1\to0^+}\frac{F(y+\delta_1)-F(y)}{\delta_1}}_{f(y)}\underbrace{\lim_{\delta_2\to0^+}\frac{F(z+\delta_2)-F(z)}{\delta_2}}_{f(z)}\\
+        & = \frac{n!}{(u-1)!(v-u-1)!(n-v)!}[F(y)]^{u-1}[F(z)-F(y)]^{v-u-1}[1-F(z)]^{n-v}f(y)f(z)
+    \end{align*}
+\end{proof}
+\begin{proof}
+    The cdf of $Y_v$
+    \begin{align*}
+        G_v(y) & = P(Y_v\leq y) = P(\text{at least }v\text{ of the }X_i\text{'s are }\leq y)\\
+        & = \underbrace{\sum_{j=v}^{n}P(\text{exactly }j\text{ of the }X_i\text{'s are }\leq y)}_{N_y=\#\{i:x_i\leq y\}}\\
+        & = \sum_{j=v}^{n}\left(\begin{array}{c}
+        n\\j\end{array}\right)[F(y)]^j[1-F(y)]^{n-j}\quad \text{since }N_y\sim B(n,F(y))
+    \end{align*}
+    The pdf is just the derivative of the cdf, thus
+    \begin{align*}
+        g_v(y) & = G'_v(y) = \sum_{j=v}^{n}\left(\begin{array}{c}
+        n\\j\end{array}\right)\left[j[F(y)]^{j-1}f(y)[1-F(y)]^{n-j} - [F(y)]^j(n-j)[1-F(y)]^{n-j-1}(-f(y))\right]\\
+        & = f(y)\sum_{j=v}^{n}\left(\begin{array}{c}
+        n\\j\end{array}\right)[F(y)]^{j-1}[1-F(y)]^{n-j}[j + n - j - nj]\\
+        & = f(y)\sum_{j=v}^{n}\left(\begin{array}{c}
+        n\\j\end{array}\right)[F(y)]^{j-1}[1-F(y)]^{n-j}[n - nj + j]\\
+        & = f(y)\sum_{j=v}^{n}\left(\begin{array}{c}
+        n\\j\end{array}\right)[F(y)]^{j-1}[1-F(y)]^{n-j}[n(1 - j) + j]\\
+        & = f(y)\sum_{j=v}^{n}\left(\begin{array}{c}
+        n\\j\end{array}\right)[F(y)]^{j-1}[1-F(y)]^{n-j}[n - nj + j]\\
+        & = \frac{n!}{(v-1)!(n-v)!}[F(y)]^{v-1}[1-F(y)]^{n-v} f(y)
+    \end{align*}
+\end{proof}
+
 \thm[]{Important special cases : the maximum and the minimum}{
     The pdf and the cdf of the minimum and the maximum are
     \begin{align*}
@@ -409,6 +477,47 @@ and the pdf of $Y_v$ is
         & = nf(x)(n-1)f(y)[F(y)-F(x)]^{n-2}\, ,n>2
     \end{align*}
 \end{proof}
+\ex[]{Pareto}{
+    Pareto distribution is one of the fat tail distributions.
+    \begin{equation*}
+        f(x) \propto x^{-(\theta+1)}\, ,x>c \Leftrightarrow f(x) = bx^{-(\theta+1)}
+    \end{equation*}
+    To find $b$, we impose that the integral of the pdf is equal to 1.
+    \begin{align*}
+        \int_{c}^{+\infty}bx^{-(\theta+1)}\,dx & = 1\\
+        b\left[-\frac{1}{\theta}x^{-\theta}\right]_{c}^{+\infty} & = 1\\
+        b\left(0-\frac{c^{-\theta}}{-\theta}\right) & = 1\\
+        b\frac{c^{-\theta}}{\theta} & = 1\\
+        b & = \theta c^{\theta}
+    \end{align*}
+    Polynomial decays slower than exponential decays. This means that the tails are heavier.
+    \begin{align*}
+        F(x) & = P(X\leq x) = \int_{c}^{x} f(u) \, du\\
+        & = \int_{c}^{x} \theta c^{\theta} u^{-(\theta+1)}\, du\\
+        & = \theta c^{\theta}\left[-\frac{u^{-\theta}}{\theta}\right]_{c}^{x}\\
+        & = \theta c^{\theta}\left(\frac{x^{-\theta}-c^{-\theta}}{-\theta}\right)\\
+        & = c^{\theta}(c^{-\theta}-x^{-\theta})\\
+        & = 1 - \left(\frac{c}{x}\right)^{\theta}\\
+        & = 1 - c^\theta x^{-\theta}\, ,x>c
+    \end{align*}
+    Now showing the distribution of the minimum order statistic.
+    \begin{align*}
+        g_1(y) & = n f(y)[1-F(y)]^{n-1}\\
+        & = n \theta c^{\theta} y^{-(\theta+1)}\left[c^{\theta} y^{-\theta}\right]^{n-1}\\
+        & = n \theta c^{\theta} y^{-(\theta+1)} c^{\theta(n-1)} y^{-\theta(n-1)}\\
+        & = n \theta c^{\theta n} y^{-(\theta n + 1)}\, ,y>c
+    \end{align*}
+    This has the same structure as a Pareto distribution with parameter $\theta n$.
+    Thus, the minimum of a sample of size $n$ from a Pareto($\theta$) distribution is still a Pareto distribution with parameter $\theta n$.
+    \begin{equation*}
+        X_{(1)} \sim Pa(c, \theta n)
+    \end{equation*}
+    However, the maximum does not have a simple form.
+    \begin{equation*}
+        g_n(y) = n \theta c^{\theta} y^{-(\theta+1)}\left[1 - c^{\theta} y^{-\theta}\right]^{n-1}\, ,y>c
+    \end{equation*}
+    The maximum does not belong to the Pareto family.
+}
 
 
 %\dfn{Definition Topic}{Definition Statement}
