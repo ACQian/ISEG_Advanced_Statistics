@@ -518,6 +518,280 @@ and the pdf of $Y_v$ is
     \end{equation*}
     The maximum does not belong to the Pareto family.
 }
+\ex[]{Exponential}{
+    Let $(X_1,\ldots,X_n)$ be an iid random sample from an $Exp(\lambda)$ population.
+    The pdf and cdf of the exponential distribution are
+    \begin{equation*}
+        f(x) = \lambda e^{-\lambda x}\, ,x>0\quad\quad F(x) = 1 - e^{-\lambda x}\, ,x>0
+    \end{equation*}
+    The pdf of the minimum order statistic is
+    \begin{align*}
+        g_1(y) & = n f(y)[1-F(y)]^{n-1}\\
+        & = n \lambda e^{-\lambda y}\left[e^{-\lambda y}\right]^{n-1}\\
+        & = n \lambda e^{-\lambda y} e^{-\lambda ny+\lambda y}\\
+        & = n \lambda e^{-\lambda n y}\, ,y>0
+    \end{align*}
+    This has the same structure as an exponential distribution with parameter $\lambda n$.
+    Thus, the minimum of a sample of size $n$ from an $Exp(\lambda)$ distribution is still an exponential distribution with parameter $\lambda n$.
+    \begin{equation*}
+        X_{(1)} \sim Exp(\lambda n)
+    \end{equation*}
+    Also notice that
+    \begin{equation*}
+        E[x] = \frac{1}{\lambda} \Rightarrow E[X_{(1)}] = \frac{1}{\lambda n} < \frac{1}{\lambda}
+    \end{equation*}
+    This makes sense as it is often used to model duration.\\
+    The pdf of the maximum order statistic is
+    \begin{align*}
+        g_n(y) & = n f(y)[F(y)]^{n-1}\\
+        & = n \lambda e^{-\lambda y}\left[1 - e^{-\lambda y}\right]^{n-1}\, ,y>0
+    \end{align*}
+    The maximum does not belong to the exponential family.
+}
+
+\dfn[]{Sample quantile}{
+    Let $p\in(0,1)$ and $k=np$. Then the sample quantile of order $p$ is $Z_p$ such that
+    \begin{equation*}
+        Z_p = \begin{cases*}
+            \frac{Y_k+Y_{k+1}}{2} & if $k$ is an integer\\
+            Y_{(\lceil k \rceil)} & if $k$ is not an integer
+        \end{cases*}
+    \end{equation*}
+    where $\lceil k \rceil$ is the integer part of $k$.
+}
+\thm[]{Asymptotic distribution of the sample quantile of order $p$}{
+    Let $Z_p$ be the sample quantile of order $p$ of an iid random sample of size $n$, obtained from a continuous population with density $f$. 
+    Denoted by $\xi_p$ the population quantile of order $p$.
+    If $f$ is continuous and positive at $\xi_p$, then
+    \begin{equation*}
+        \sqrt{n}\, f(\xi_p) \frac{Z_p - \xi_p}{\sqrt{p(1-p)}}\xrightarrow{d} N\left(0, 1\right)
+    \end{equation*}
+}
+\begin{equation*}
+    \xi_p : P(X\leq \xi_p) \geq p \quad\text{and}\quad P(X\geq\xi_p)\geq 1-p
+\end{equation*}
+If $X$ is continous, $F(\xi_p) = p$. It is actually quite difficult to prove the relationship between the population quantle $\xi_p$ and the sample quantile $Z_p$.
+\ex[]{Normal}{
+    If $X\sim N(\mu,\sigma^2)$, then $\xi_{\frac{1}{2}} = \mu$. Then $f(\xi_{\frac{1}{2}}) = (2\pi\sigma^2)^{-\frac{1}{2}}$. Hence,
+    \begin{equation*}
+        \sqrt{n}\frac{Z_{\frac{1}{2}} - \mu}{\sigma}\xrightarrow{d} N(0, \frac{\pi}{2}) \Leftrightarrow \sqrt{\frac{2n}{\pi\sigma^2}}(Z_{\frac{1}{2}}-\mu)\xrightarrow{d}N(0,1)
+    \end{equation*}
+}
+
+\thm[]{Fisher-Tippett-Gnedenko Theorem}{
+    If $\exists a_n, b_n\, ,b_n>0$ then
+    \begin{equation*}
+        \lim_{n\to\infty} P\left(\frac{X_{(n)} - a_n}{b_n} \leq x\right) = F(x)
+    \end{equation*}
+    and $F$ is the cdf of a non-degenerate r.v., then $F$ belongs to one of the following three families:
+    \begin{itemize}
+        \item \textbf{Gumbel} : $F(x) = e^{-e^{-(x-\mu)/\beta}}\, ,x\in\mathbb{R}$, with $\mu\in\mathbb{R}$ and $\beta>0$
+        \item \textbf{Fréchet} : $F(x) = 0\, ,x\leq \mu$ and $F(x) = e^{-((x-\mu)/\beta)^{-\alpha}}\, ,x>\mu$ with $\mu\in\mathbb{R}$, $\beta>0$ and $\alpha>0$
+        \item \textbf{Weibull} : $F(x) = e^{-((\mu - x)/\beta)^{\alpha}}\, ,x<\mu$ and $F(x) = 1\, ,x\geq \mu$ with $\mu\in\mathbb{R}$, $\beta>0$ and $\alpha>0$
+    \end{itemize}
+    One of the three extreme value distributions.
+}
+
+\subsection{A few sampling distributions}
+
+\subsubsection{Normal population}
+Let $(X_1,\ldots,X_n)$ be an iid random sample from a $N(\mu,\sigma^2)$ distribution.
+\begin{itemize}
+    \item Distribution of the sample mean $\bar{X}$\\
+    
+        $\bar{X}$ is a linear combination of independent normals, hence it follows a normal distribution. We know that $E[\bar{X}] = \mu$ and $Var(\bar{X}) = \frac{\sigma^2}{n}$. Thus,
+        \begin{equation*}
+            \bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)\quad \text{or}\quad \sqrt{n}\frac{\bar{X}-\mu}{\sigma} \sim N(0,1)
+        \end{equation*}
+        Unlike the CLT which is approximately $N(0,1)$, this is exact.
+    \item Distribution of the bias-corrected sample variance $S'^2$\\
+    
+        Because $\frac{X_i - \mu}{\sigma}\sim N(0,1)$, we have $\left(\frac{X_i-\mu}{\sigma}\right)^2\sim \chi^2_1$. 
+        Thus, $\sum_{i=1}^{n}\left(\frac{X_i-\mu}{\sigma}\right)^2\sim \chi^2_n$.\\
+
+        Also $\sum_{i=1}^{n}(X_i - \mu)^2 = \sum_{i=1}^{n}[(X_i - \bar{X}) + (\bar{X} - \mu)]^2 = \sum_{i=1}^{n}(X_i - \bar{X})^2 + n(\bar{X} - \mu)^2$.
+        Hence, 
+        \begin{equation*}
+            \sum_{i=1}^{n}(X_i - \mu)^2 = (n-1)\frac{S'^2}{\sigma^2} + n\frac{(\bar{X} - \mu)^2}{\sigma^2}
+        \end{equation*}
+        Since $\bar{X}\sim N(\mu,\frac{\sigma^2}{n})$, we have $n\frac{(\bar{X} - \mu)^2}{\sigma^2}\sim \chi^2_1$.
+        Also, $\bar{X}$ and $S'^2$ are independent in the context of the normal distribution.
+        Thus, \begin{equation*}
+            (n-1)\frac{S'^2}{\sigma^2} = \sum_{i=1}^{n}(X_i - \mu)^2 - n\frac{(\bar{X} - \mu)^2}{\sigma^2} \sim \chi^2_{n-1}
+        \end{equation*}
+        Therefore,
+        \begin{equation*}
+            \frac{(n-1)S'^2}{\sigma^2} \sim \chi^2_{n-1}
+        \end{equation*}
+    \item Student ratio\\
+    
+        When the population variance is unknown, we have the student ratio:
+        \begin{equation*}
+            \frac{\bar{X}-\mu}{S'/\sqrt{n}} = \frac{\bar{X}-\mu}{S/\sqrt{n-1}} \sim t(n-1)
+        \end{equation*}
+        \begin{proof}
+            $\frac{N(0,1)}{\sqrt{\chi^2(n)/n}}\sim t(n)\, ,N(0,1)\ind \chi^2(n)$\\
+            We know that $\bar{X}$ and $S'^2$ are independent, thus
+            \begin{equation*}
+                \frac{\frac{\bar{X}-\mu}{\sigma/\sqrt{n}}}{\sqrt{\frac{(n-1)S'^2}{\sigma^2}/(n-1)}} = \frac{\bar{X}-\mu}{S'/\sqrt{n}} \sim t(n-1)
+            \end{equation*}
+            and because $t(n)\xrightarrow{d}N(0,1)$, we have
+            \begin{equation*}
+                \frac{\bar{X}-\mu}{S'/\sqrt{n}} \xrightarrow{d} N(0,1)
+            \end{equation*}
+        \end{proof}
+\end{itemize}
+
+\subsubsection{Two normal distributions}
+\begin{gather*}
+    X_1\sim N(\mu_1,\sigma_1^2)\\
+    X_2\sim N(\mu_2,\sigma_2^2)\\
+\end{gather*}
+Two random samples, mutually independent, of size $m$ and $n$ respectively: $(X_{11},\ldots,X_{1m})$ and $(X_{21},\ldots,X_{2n})$.
+\begin{itemize}
+    \item Difference of the sample means
+        \begin{equation*}
+            \bar{X_1}-\bar{X_2} \sim N(\mu_1 - \mu_2, \frac{\sigma_1^2}{m} + \frac{\sigma_2^2}{n}) \Leftrightarrow 
+            \frac{(\bar{X_1}-\bar{X_2}) - (\mu_1 - \mu_2)}{\sqrt{\frac{\sigma_1^2}{m} + \frac{\sigma_2^2}{n}}} \sim N(0,1)
+        \end{equation*}
+        However, the previous result is limited if the population variances are not known.
+        We can assume both variances are equal, i.e. $\sigma_1^2 = \sigma_2^2 = \sigma^2$.
+        Then,
+        \begin{equation*}
+            T = \frac{\frac{(\bar{X_1}-\bar{X_2}) - (\mu_1 - \mu_2)}{\sqrt{\frac{1}{m} + \frac{1}{n}}}}{\sqrt{\frac{(m-1)S'^2_1+(n-1)S'^2_2}{m+n-2}}} \sim t(m+n-2)
+        \end{equation*}
+        Considering the equation as $T = \frac{U}{\sqrt{V/(m+n-2)}}$, $U\frac{1}{\sigma}\sim N(0,1)$ and $V\frac{1}{\sigma^2}\sim \chi^2(m+n-2)$.\\
+        When the variances are unkown and different, if the sample sizes are large, Slutsky's theorem allows us to replace the population variances by the sample variances
+        and obtain the same distribution in the limit. However, for small sample sizes, we can use the Welch-Satterthwaite approximation
+        \begin{equation*}
+            \frac{(\bar{X_1}-\bar{X_2})-(\mu_1-\mu_2)}{\sqrt{\frac{S'^2_1}{m}+\frac{S'^2_2}{n}}}\overset{a}{\sim} t(\nu)
+        \end{equation*}
+        where $\nu$ is the largest integer that does not exceed
+        \begin{equation*}
+            \nu = \frac{\left(\frac{S'^2_1}{m} + \frac{S'^2_2}{n}\right)^2}{\frac{(S'^2_1/m)^2}{m-1} + \frac{(S'^2_2/n)^2}{n-1}}
+        \end{equation*}
+    \item Two sample variances
+        \begin{align*}
+            U & = \frac{(m-1)S'^2_1}{\sigma_1^2} \sim \chi^2_{m-1}\\
+            V & = \frac{(n-1)S'^2_2}{\sigma_2^2} \sim \chi^2_{n-1}
+        \end{align*}
+        Since $ U\ind V$, we have
+        \begin{equation*}
+            F = \frac{U/(m-1)}{V/(n-1)} = \underbrace{\frac{S'^2_1}{S'^2_2}}_{\text{ratio of the corrected sample variance}}\times\underbrace{\frac{\sigma^2_2}{\sigma^2_1}}_{\text{inverted ratio of the variances}} \sim F(m-1,n-1)
+        \end{equation*}
+\end{itemize}
+
+\subsubsection{Bernoulli population}
+
+Consider there are two types of individuals in the population: the ones who posses a certain attribute and the one who do not.
+Let $(X_1, \ldots, X_n)$ be an iid random sample of size $n$ from a $B(1,\theta)$ population, where $\theta$ is the proportion of successes in the population (known).
+It is useful to establish the sampling distribution of two statistics:
+\begin{itemize}
+    \item The number of individuals in the sample who posses the attribute: $T = \sum_{i=1}^{n} X_i$
+    \item The proportion of individuals in the sample who posses the attribute: $\bar{X} = \frac{T}{n}$
+\end{itemize}
+Clearly, $T \sim B(n,\theta)$, hence
+\begin{itemize}
+    \item $P(T=t) = \left(\begin{array}{c} n\\t\end{array}\right)\theta^t(1-\theta)^{n-t}\, ,t=0,1,\ldots,n$
+    \item $P(\bar{X} = z) = P\left(T = nz\right) = \left(\begin{array}{c} n\\nz\end{array}\right)\theta^{nz}(1-\theta)^{n-nz}\, ,z = \frac{0}{n}, \frac{1}{n}, \frac{2}{n}, \ldots, \frac{n}{n}$
+\end{itemize}
+\thm[]{De Moivere-Laplace theorem}{
+    For large sample sizes,
+    \begin{equation*}
+        \frac{T - n\theta}{\sqrt{n\theta(1-\theta)}}\xrightarrow{d} N(0,1) \Leftrightarrow \frac{\bar{X} - \theta}{\sqrt{\frac{\theta(1-\theta)}{n}}}\xrightarrow{d} N(0,1)
+    \end{equation*}
+    use when $n>20\, ,n\theta\geq 5\, ,n\theta(1-\theta)\geq 5\, , 0.1<\theta<0.9$.\\
+
+    Combined with the continuity correction, we have
+    \begin{align*}
+        P(a\leq T \leq b) & \approx P\left(\frac{a - 0.5 - n\theta}{\sqrt{n\theta(1-\theta)}} \leq Z \leq \frac{b + 0.5 - n\theta}{\sqrt{n\theta(1-\theta)}}\right)\\
+        & = \Phi\left(\frac{b + 0.5 - n\theta}{\sqrt{n\theta(1-\theta)}}\right) - \Phi\left(\frac{a - 0.5 - n\theta}{\sqrt{n\theta(1-\theta)}}\right)
+    \end{align*}
+    with $a<b\, ,a,b=0,1,\ldots,n$.
+}
+\begin{proof}
+    From the \textbf{CLT}, we get
+    \begin{equation*}
+        \sqrt{n}\frac{\bar{X}-\theta}{\sqrt{\theta(1-\theta)}}\overset{a}{\sim}N(0,1)
+    \end{equation*}
+    Now going through some algebraic manipulations and applying the \textbf{CLT} again, we have
+    \begin{equation*}
+        \sqrt{n}\frac{T-n\theta}{n\sqrt{\theta(1-\theta)}} = \frac{T-n\theta}{\sqrt{n}\sqrt{\theta(1-\theta)}} = \frac{T-n\theta}{\sqrt{n\theta(1-\theta)}}\overset{a}{\sim} N(0,1)
+    \end{equation*}
+\end{proof}
+
+The motivation for the continuity correction is that the binomial distribution is discrete while the normal distribution is continuous.
+When approximating a discrete distribution with a continuous one, we need to adjust for this difference.
+\begin{align*}
+    p(T=x) & = P\left(\frac{T-n\theta}{\sqrt{n\theta(1-\theta)}} = \frac{x-n\theta}{\sqrt{n\theta(1-\theta)}}\right)\overset{a}{\sim}N(0,1)\\
+    & \approx 0
+\end{align*}
+Thus we need to consider the interval around $x$ that captures the probability mass: $P(T=x) = P(x-0.5<T<x+0.5)$.
+\thm[]{Law of rare events}{
+    Technically, $n\to\infty$ and $\theta\to 0$ such that $n\theta=\lambda$ is constant.
+    Then,
+    \begin{equation*}
+        T\overset{a}{\sim} Po(\lambda)
+    \end{equation*}
+    use for $n>20$ and $\theta\notin(0.1,0.9)$ and $n\theta<5$.
+}
+
+\subsubsection{Two Bernoulli populations}
+Consider two Bermoulli populations with success probabilities $\theta_1$ and $\theta_2$ respectively.
+We want to compare $\theta_1$ and $\theta_2$. $\theta_1-\theta_2$ will be unknown and we want to make inference about this quantity through the statistics $\bar{X_1}-\bar{X_2}$, 
+the difference between the sample proportions in two independent samples:
+\begin{itemize}
+    \item $(X_{11},\ldots,X_{1m})\Rightarrow\bar{X_1} = \sum_{i=1}^{n}\frac{X_{1i}}{m}$
+    \item $(X_{21},\ldots,X_{2n})\Rightarrow\bar{X_2} = \sum_{j=1}^{n}\frac{X_{2j}}{n}$
+\end{itemize}
+By the \textbf{De Moivere-Laplace theorem}, we have
+\begin{equation*}
+    \frac{\bar{X_1}-\theta_1}{\sqrt{\theta_1(1-\theta_1)/m}}\xrightarrow{d}N(0,1) \qquad \frac{\bar{X_2}-\theta_2}{\sqrt{\theta_2(1-\theta_2)/n}}\xrightarrow{d}N(0,1)
+\end{equation*}
+and using the independence between the two samples, we get
+\begin{equation*}
+    \frac{(\bar{X_1}-\bar{X_2}) - (\theta_1 - \theta_2)}{\sqrt{\frac{\theta_1(1-\theta_1)}{m} + \frac{\theta_2(1-\theta_2)}{n}}}\xrightarrow{d} N(0,1)
+\end{equation*}
+\begin{proof}
+    \begin{align*}
+        X_m^* & \to N(0,\sigma^2)\\
+        Y^*_n & \to N(0, \delta^2)
+    \end{align*}
+    Then,
+    \begin{align*}
+        Z_{m,n} & = \frac{(X_m^* + Y_n^*)-(\mu-\theta)}{\underbrace{\sqrt{\frac{\sigma^2}{m}+\frac{\delta^2}{n}}}_{\sqrt{A}}}\\
+        & = \frac{(X_m-\mu)-(Y_n-\theta)}{\sqrt{A}}\\
+        & = \frac{X_m-\mu}{\sqrt{\sigma^2/m}}\times\underbrace{\frac{\sqrt{\sigma^2/m}}{\sqrt{A}}}_{\to\sqrt{c}} 
+        - \frac{Y_n-\theta}{\sqrt{\delta^2/n}}\times\underbrace{\frac{\sqrt{\delta^2/n}}{\sqrt{A}}}_{=\sqrt{1-\frac{\sigma^2/m}{A}}\to\sqrt{1-c}}
+    \end{align*}
+    Using the moment generating functions, we have
+    \begin{align*}
+        M_{Z_{m,n}}(S) & = E\left[e^{SZ_{m,n}}\right]\\
+        & = E\left[e^{S\frac{X_m-\mu}{\sqrt{\sigma^2/m}}\frac{\sqrt{\sigma^2/m}}{\sqrt{A}}-S\frac{Y_n-\theta}{\sqrt{\delta^2/n}}\frac{\sqrt{\delta^2/n}}{\sqrt{A}}}\right]\\
+        & = M_{\frac{X_m-\mu}{\sqrt{\sigma^2/m}}}\left(S\frac{\sqrt{\sigma^2/m}}{\sqrt{A}}\right)M_{\frac{Y_n-\theta}{\sqrt{\delta^2/n}}}\left(S\frac{\sqrt{\delta^2/n}}{\sqrt{A}}\right)\\
+        & = \underbrace{M_{\sqrt{n}\frac{X_m-\mu}{\sqrt{\sigma^2/m}}}\left(S\frac{\sqrt{\sigma^2/m}}{\sqrt{A}}\right)}_{\to e^{S^2 c/2}}
+        \underbrace{M_{\sqrt{n}\frac{Y_n-\theta}{\sqrt{\delta^2/n}}}\left(S\frac{\sqrt{\delta^2/n}}{\sqrt{A}}\right)}_{\to e^{S^2 (1-c)/2}}\\
+        & \to e^{S^2c/2+S^2/2 - S^2 c/2} = e^{S^2/2}
+    \end{align*}
+    which is the mgf of a standard normal distribution.\\
+
+    Using the \textbf{Lévy theorem}, we conclude that $Z_{m,n}\xrightarrow{d}N(0,1)$.\\
+\end{proof}
+\ex[]{Bernoulli : observation of large proportion of bad clients}{
+    $\theta_1 = 0.05, \theta_2 = 0.06, m=400, n=500$
+    \begin{align*}
+        P(\bar{X_1}-\bar{X_2}>0) & = P\left(\frac{(\bar{X_1}-\bar{X_2}) - (\theta_1 - \theta_2)}{\sqrt{\frac{\theta_1(1-\theta_1)}{m} + \frac{\theta_2(1-\theta_2)}{n}}} > \frac{0 - (-0.01)}{\sqrt{\frac{0.05\times 0.95}{400} + \frac{0.06\times 0.94}{500}}}\right)\\
+        & = 1 - \Phi(0.66) \approx 0.2546
+    \end{align*}
+}
+\nt{
+    Care must be taken when extrapolating conclusions from the samples to the whole universe.
+}
+
+\subsubsection{Gamma population}
+
+
+
 
 
 %\dfn{Definition Topic}{Definition Statement}
