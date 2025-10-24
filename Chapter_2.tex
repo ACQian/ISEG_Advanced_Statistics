@@ -790,8 +790,73 @@ and using the independence between the two samples, we get
 
 \subsubsection{Gamma population}
 
+If $X\sim G(\alpha,\lambda)$, then for $\alpha,\lambda>0$,
+\begin{equation*}
+    f(x|\alpha,\lambda) = \frac{\lambda^{\alpha}}{\Gamma(\alpha)} x^{\alpha - 1} e^{-\lambda x}\, ,x>0
+\end{equation*}
+where $\alpha$ is the shape parameter and $\lambda$ is the rate parameter. Sometimes, the scale parameter $\beta = \frac{1}{\lambda}$ is used instead of the rate parameter.\\
 
+Couple of special cases regarding the Gamma distribution:
+\begin{itemize}
+    \item If $\alpha\in\bbN$, it is also known as the Erlang distribution.
+    \item If $\alpha=1$, it reduces to the exponential distribution with parameter $\lambda$.
+    \item If $\alpha=\frac{n}{2}$ and $\lambda=\frac{1}{2}$, then $X\sim \chi^2_{n}$
+\end{itemize}
+Other special properties of the Gamma distribution:
+\begin{itemize}
+    \item If $X_1\sim G(\alpha_1,\lambda)$ is independent of $X_2\sim G(\alpha_2,\lambda)$, then $X_1 + X_2 \sim G(\alpha_1 + \alpha_2, \lambda)$
+    \item If $c>0$ and $X\sim G(\alpha,\lambda)$, then $cX\sim G(\alpha, \frac{\lambda}{c})$
+    \item If $X\sim G(\alpha,\lambda)$, then $2\lambda X \sim G(\alpha, \frac{1}{2}) = \chi^2_{2\alpha}$
+        \begin{proof}
+            \begin{equation*}
+                X\sim G(\alpha,\lambda)
+            \end{equation*}
+            Using the property $cX\sim G(\alpha, \frac{\lambda}{c})$ with $c = 2\lambda$, we have
+            \begin{equation*}
+                2\lambda X \sim G\left(\alpha, \frac{\lambda}{2\lambda}\right) = G\left(\alpha, \frac{1}{2}\right)
+            \end{equation*}
+            With some algebraic manipulation and using the property $G(\frac{n}{2},\frac{1}{2})=\chi^2_n$, we get
+            \begin{equation*}
+                G\left(\frac{2\alpha}{2}, \frac{1}{2}\right) = \chi^2_{2\alpha}
+            \end{equation*}
+        \end{proof}
+\end{itemize}
+Another useful result is often used:
+\begin{equation*}
+    X \sim \chi^2_n \Rightarrow \sqrt{2X} - \sqrt{2n} \xrightarrow{d} N(0,1)
+\end{equation*}
+where the square root is used to make the $\chi^2_1$ distribution more symmetric.
+\begin{proof}
+    $\chi^2$ are additive if independent, $X\sim \sum_{i=1}^{n} X_i$ where $X_i\sim \chi^2_1$ with $E[X_i] = 1$ and $Var(X_i) = 2$.\\
 
+    Using the \textbf{CLT}, we have
+    \begin{equation*}
+        \frac{X-n\, E[X_i]}{\sqrt{n\, Var(X_i)}}\xrightarrow{d} N(0,1) \Leftrightarrow
+        \frac{X - n}{\sqrt{2n}}\xrightarrow{d} N(0,1)
+    \end{equation*}
+    Now doing some algebraic manipulation,
+    \begin{equation*}
+        \frac{\frac{X}{n}-1}{\sqrt{2}\frac{\sqrt{n}}{n}} = \frac{\frac{X}{n}-1}{\frac{\sqrt{2}}{\sqrt{n}}} = \sqrt{n}\frac{\frac{X}{n}-1}{\sqrt{2}}\xrightarrow{d}N(0,1)
+    \end{equation*}
+    Using \textbf{Slutsky's}, we have
+    \begin{equation*}
+        \sqrt{n}\left(\frac{X}{n} - 1\right) \xrightarrow{d} N(0,2)
+    \end{equation*}
+    Now applying the \textbf{Delta method} with $g(x) = \sqrt{x}$ and $g'(x) = \frac{1}{2}x^{-\frac{1}{2}}$,
+    \begin{equation*}
+        \sqrt{n}\left(\sqrt{\frac{X}{n}}-1\right)\xrightarrow{d}N\left(0, \underbrace{\left(\frac{1}{2}\right)^2}_{g'(1)}\underbrace{2}_{\sigma^2}\right)
+        \Leftrightarrow \sqrt{X}-\sqrt{n}\xrightarrow{d}N\left(0,\frac{1}{2}\right)
+    \end{equation*}
+    Now dividing by $\sqrt{\frac{1}{2}}$ on both sides and using \textbf{Slutsky's} again, we get
+    \begin{equation*}
+        \frac{\sqrt{X}-\sqrt{n}}{\sqrt{\frac{1}{2}}} = \sqrt{2X} - \sqrt{2n} \xrightarrow{d} N(0,1)
+    \end{equation*}
+\end{proof}
+Another useful property of the Gamma distribution. Let $X_1,\ldots,X_n$ be a random sample of size $n$ from a $G(\alpha,\lambda)$ population.
+Then,
+\begin{equation*}
+    \sum_{i=1}^{n} X_i\sim G(n\alpha, \lambda) \Leftrightarrow \bar{X}\sim G(n\alpha, n\lambda) \Leftrightarrow 2n\lambda\bar{X}\sim \chi^2_{2n\alpha}
+\end{equation*}
 
 
 %\dfn{Definition Topic}{Definition Statement}
