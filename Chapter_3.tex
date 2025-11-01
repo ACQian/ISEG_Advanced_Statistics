@@ -1,0 +1,264 @@
+
+\chapter{Sufficiency and Information}
+
+\section{Sufficiency}
+
+Consider a parametric model $\mcF = \{f(\cdot|\theta): \theta\in\Theta\}$ with $X_1,\ldots, X_n$ iid random sample of size $n$ extracted from $X$.
+The goal is to use the information contained in $X_1,\ldots,X_n$ to produce inferential statements about the unknown parameter $\theta$.
+When we compute statistics, i.e. functions of the random sample, we are summarizing the information contained in the random sample.
+\opn{When can we be assured that in the process we are not losing any relevant information about the parameter?}{
+    When all information that is lost is spurious, i.e. irrelevant for $\theta$.
+}
+
+\ex{Poisson}{
+    $X | \lambda\sim Po(\lambda)$ where $\lambda > 0$. 
+    We observe a random sample of size $n=2$ and we know that the observed value of the statistic $T=\sum_{i=1}^{n}X_i=31$.
+    What can we say about the random sample $X_1, X_2$?\\
+
+    We want the possibility of the sample given all the information that I have.
+    \begin{align*}
+        \frac{P(X_1=x_1, X_2=x_2|\lambda)}{P(T=31|\lambda)} & = \frac{\frac{e^{-\lambda}\lambda^{x_1}}{x_1!}\frac{e^{-\lambda}\lambda^{x_2}}{x_2!}}{\frac{e^{-2\lambda}(2\lambda)^{31}}{31!}}\\
+        & =\frac{31!}{x_1!x_2!}\times\frac{\lambda^{x_1+x_2}}{\lambda^{31}}\times\left(\frac{1}{2}\right)^{31}\\
+        & =\frac{31!}{(31-x_2)!x_2!}\times\left(\frac{1}{2}\right)^{x_2}\left(1-\frac{1}{2}\right)^{31-x_2}\\
+        \Rightarrow\quad & X_2|T=31 \sim B(31,\frac{1}{2})
+    \end{align*}
+    We don't need to know $\lambda$.
+}
+
+\dfn[]{Sufficient statistics}{
+    We say that a statistic $T$ is sufficient for $\mcF$ or for $\theta$, 
+    if the conditional distribution of the random sample given the observed value of $T$ does not depend on the unkown parameter $\theta$ for all $\theta$.
+}
+What is essentially means is that $f(x_1,\ldots,x_n|\theta,t)$ does not depend on $\theta$.
+\begin{align*}
+    f(x_1,\ldots,x_n|\theta,t) & = \frac{f(x_1,\ldots,x_n,t|\theta)}{f_T(t,\theta)}\\
+    & = \begin{cases*}
+        \frac{f(x_1,\ldots,x_n|\theta)}{f_T(t,\theta)}\quad \text{if }T(x_1,\ldots,x_n)=t\\
+        0\quad \text{otherwise}
+    \end{cases*}
+\end{align*}
+\ex[]{Definition : Bernoulli}{
+    $X|\theta\sim B(1,\theta)$, and $X_1,\ldots,X_n|\theta \overset{iid}{\sim} B(1,\theta)$\\
+
+    Intuitively, the sequence of success and failure should not matter, only the proportion is important. 
+    Thus, $T=\sum_{i=1}^{n}X_i$ should be sufficient for $\theta$.
+    \begin{align*}
+        f(x_1,\ldots,x_n|\theta,t) & = \frac{f(x_1,\ldots,x_n|\theta)}{f_T(t|\theta)} \quad\text{if }T(x_1,\ldots,x_n)=t, \sum x_i = t\\
+        & =\frac{\prod_{i=1}^{n}f(x_i|\theta)}{f_T(t|\theta)}
+    \end{align*}
+    Because $T|\theta\sim B(n,\theta)$
+    \begin{align*}
+        f(x_1,\ldots,x_n|\theta,t) & = \frac{\prod_{i=1}^{n}\theta^{x_i}(1-\theta)^{1-x_i}}{\left(\begin{array}{c}n\\t\end{array}\right)\theta^t (1-\theta)^{n-t}}\quad \text{if }\sum x_i = t\\
+        & =\frac{\theta^{\sum x_i}(1-\theta)^{n-\sum x_i}}{\left(\begin{array}{c}n\\t\end{array}\right)\theta^t (1-\theta)^{n-t}}\\
+        & = \frac{1}{\left(\begin{array}{c}n\\t\end{array}\right)}
+    \end{align*}
+}
+The definition of sufficient statistic is not very useful to discover sufficient statistics.
+Thus we need to rely on another theorem.
+\thm[]{Halmos-Savage Factorization Criterion}{
+    A statistic $T$ is sufficient for $\theta$ if and only if there are non-negative functions $g$ and $h$ such that
+    \begin{itemize}
+        \item $g$ depends on $\theta$ and on the random sample exclusively through the observed value of $T$.
+        Meaning it depends on parameter and statistics.
+        \item $h$ depends exclusively on the random sample.
+        \item $f(x_1,\ldots,x_n|\theta) = g(T(x_1,\ldots,x_n);\theta)\times h(x_1,\ldots,x_n)$
+    \end{itemize}
+}
+\begin{proof}
+    $T$ is sufficient for $\theta \Leftrightarrow$ There are non-negative function of $g$ and $h$.\\
+
+    We first start from left to right.\\
+
+    If $T$ is sufficient for $\theta$, then
+    \begin{equation*}
+        f(x_1,\ldots,x_n|t,\theta) = \frac{f(x_1,\ldots,x_n|\theta)}{f_T(t|\theta)}\quad \text{does not depend on $\theta$}
+    \end{equation*}
+    meaning that
+    \begin{equation*}
+        f(x_1,\ldots,x_n|t) = \frac{f(x_1,\ldots,x_n|\theta)}{f_T(t|\theta)}\quad \text{if }T(x_1,\ldots,x_n)=t
+    \end{equation*}
+    so we get
+    \begin{equation*}
+        f(x_1,\ldots,x_n|\theta) = \underbrace{f_T(t|\theta)}_{g(t,\theta)}\underbrace{f(x_1,\ldots,x_n|t)}_{h(x_1,\ldots,x_n)}
+    \end{equation*}
+
+    Now going from right to left.\\
+
+    For $X$ discrete, $T$ is discrete. And for simplification, $\tilde{x} = (x_1,\ldots,x_n)$.
+    \begin{align*}
+        f_T(t|\theta) & = P(T=t|\theta) = \sum_{\tilde{x}:T(\tilde{x})=t}f(\tilde{x}|\theta)\\
+        & = \sum_{\tilde{x}:T(\tilde{x}=t)}g(t;\theta)h(\tilde{x})\\
+        & = g(t;\theta)\sum_{\tilde{x}:T(\tilde{x})=t}h(\tilde{x})
+    \end{align*}
+    we now have
+    \begin{align*}
+        f(x_1,\ldots,x_n|t,\theta) & = \frac{f(x_1,\ldots,x_n|\theta)}{f_T(t|\theta)}\quad \text{if }T(\tilde{x})=t\\
+        & = \frac{g(t,\theta)h(\tilde{x})}{g(t,\theta)\sum_{\tilde{x}:T(\tilde{x})=t}h(\tilde{x})}\\
+        & = \frac{h(\tilde{x})}{\sum_{\tilde{x}:T(\tilde{x})=t}h(\tilde{x})} \quad\text{does not depend on $\theta$}
+    \end{align*}
+\end{proof}
+
+\ex{Factorization criterion : Poisson}{
+    Let $X|\lambda\sim Po(\lambda)$
+    \begin{align*}
+        f(x_1,\ldots,x_n|\lambda) & = \prod_{i=1}^{n}f(x_1|\lambda) = \prod_{i=1}^{n}e^{-\lambda}\frac{\lambda^{x_i}}{x_i!}\\
+        & = e^{-n\lambda}\frac{\lambda^{\sum x_i}}{\prod x_i!}\\
+        & = \underbrace{e^{-n\lambda}\lambda^{\sum x_i}}_{g(\sum x_i;\lambda)}\underbrace{\frac{1}{\prod x_i!}}_{h(\tilde{x})}
+    \end{align*}
+}
+\ex[]{Factorization criterion : Uniform}{
+    Let $X|\theta\sim U(0,\theta)$, $\theta > 0$.
+    \begin{align*}
+        f(x|\theta) & = \frac{1}{\theta}\quad ,0<x<\theta\\
+        & = \frac{1}{\theta} \,I_{(0,\theta)}(x)
+    \end{align*}
+    with $I_A(x) = \begin{cases*}
+        1\quad  ,x\in A\\
+        0\quad  ,\text{otherwise}
+    \end{cases*}$
+    \begin{align*}
+        f(\tilde{x}|\theta) & = \prod_{i=1}^{n}f(x_i|\theta) = \prod_{i=1}^{n}\frac{1}{\theta}\,I_{(0,\theta)}(x_i)\\
+        & = \theta^{-n}\,I_{(0,\infty)}(x_{(1)})\,I_{(0,\theta)}(x_{(n)})\\
+        & = \underbrace{\theta^{-n}I_{(0,\theta)}(x_{(n)})}_{g(x_{(n)})}\underbrace{I_{(0,\infty)}(x_{(1)})}_{h(\tilde{x})}
+    \end{align*}
+}
+\ex[]{Factorization criterion : Shifted exponential}{
+    Consider the shifted exponential distribution $f(x|\lambda,\delta) = \lambda e^{-\lambda(x-\delta)}\,I_{[\delta,\infty)}(x)$
+    \begin{align*}
+        f(\tilde{x}|\lambda,\delta) & = \prod_{i=1}^{n}f(x_i|\lambda,\delta) = \prod_{i=1}^{n} \lambda e^{-\lambda(x_i-\delta)}\,I_{[\delta,\infty)}(x_i)\\
+        & = \underbrace{\lambda^n e^{-\lambda\sum x_i}e^{n\lambda\delta}\,I_{[\delta,\infty)}(x_{(1)})}_{g(\sum x_i, x_{(1)};\lambda,\delta)}\times \underbrace{1}_{h(\tilde{x})}
+    \end{align*}
+    By the factorization criterion, $(\sum x_i, x_{(1)})$ is sufficient for $(\lambda,\delta)$.
+}
+Two of things to notice regarding sufficient statistics.
+\begin{itemize}
+    \item There is always a sufficient statistic, it can be all the samples.
+    \item Sufficient statistics are not unique.
+\end{itemize}
+\ex[]{Un-uniqueness of sufficient statistics : Poisson}{
+    $X\sim Po(\lambda)$ where $t = \sum x_i$
+    \begin{itemize}
+        \item $f(\tilde{x}|\lambda) = e^{-n\lambda}\lambda^t\frac{1}{\prod x_i!} \Rightarrow T=\sum x_i$ is sufficient.
+        \item $f(\tilde{x}|\lambda) = e^{-n\lambda}\lambda^{n\bar{x}}\frac{1}{\prod x_i!} \Rightarrow T=\bar{x}$ is sufficient.
+        \item $f(\tilde{x}|\lambda) = e^{-n\lambda}\lambda^{T_1}\lambda^{T_2}\frac{1}{\prod x_i!} 
+        \Rightarrow (T_1, T_2)$ is sufficient where $T_1 = \sum_{i=1}^{n_1}x_i$ and $T_2 = \sum_{i=n_1+1}^{n}x_i$.
+    \end{itemize}
+}
+
+Another important concept is the \textbf{partition} induced in the sample space by a statistic.
+\begin{itemize}
+    \item Any statistics $T: \mcX \to \bbR^q$ induces a partition in the sample space $\mcX$ and the partitions do not intercept.
+    \begin{center}
+        \includegraphics[scale=0.5]{Images/5.png}
+        $A + B + C + D = \mcX \Rightarrow T_1(\tilde{x}) = C \rightarrow \Pi = \{\mcX\}$
+        \includegraphics[scale=0.5]{Images/6.png}
+    \end{center}
+    If a statistic takes 2 values : $T_1(\tilde{x}) = \begin{cases}
+        c_1 &,\tilde{x}\in \mcX_1\\
+        c_2 &,\tilde{x}\in \mcX_2
+    \end{cases} \rightarrow \begin{cases}
+        \mcX_1 \cup \mcX_2 = \mcX\\
+        \mcX_1 \cap \mcX_2 = \varnothing\\
+        \Pi = \{\mcX_1,\mcX_2\}
+    \end{cases}$\\
+    \includegraphics[scale=0.5]{Images/7.png}
+    \item The finer the partition induced by $T$ in $\mcX$, the less information is lost; the smaller is the data reduction operated by $T$.
+    \item A sufficient statistic operates a data reduction that does not involve loss of relevant information about the parameter; the partition it induces is also said to be sufficient.
+\end{itemize}
+\nt{
+    When the partition is finer as it can be, 
+    $T(\tilde{x}) = \tilde{x}$, $\displaystyle\Pi = \cup_{\tilde{x}\in\mcX}\{\tilde{x}\}$, 
+    because no information will be lost.
+}
+\begin{itemize}
+    \item The notion of partition is more general than that of statistic;
+    different statistics can induce the same partition, in which case they are said to be equivalent, i.e. they are one-to-one.
+    \item If the partition induced by $T$ is finer than the partition induced by $S$, then $S$ is a function of $T$.
+    In that case, if $S$ is sufficient, so is $T$, that is\begin{equation*}
+        \begin{rcases}
+        S = h(T)\\
+        S \:\text{sufficient}
+    \end{rcases} \Rightarrow T \:\text{sufficient}
+    \end{equation*}
+    \begin{center}
+        \includegraphics[scale=0.5]{Images/8.png} $S$ is a function of $T$
+    \end{center}
+    $\begin{cases}
+        S \rightarrow \{\mcX_1,\mcX_2\}\\
+        T \rightarrow \{\mcX_1, \mcX_{21}, \mcX_{22}\}
+    \end{cases}$ If $S$ is sufficient, then $T$ is sufficient, because $T$ is finer than $S$ partition wise.
+    \item However, if $T$ is sufficient and $S = h(T)$, it is not a given that $S$ is also sufficient unless $S$ is injective,
+    in which case, $S$ and $T$ are equivalent.
+    \item We are interested in finding statistics which are sufficient but operates the least data reduction.
+    In other words, statistics that induce the coarsest partition that is still sufficient.
+    \begin{center}
+        \includegraphics[scale=0.5]{Images/9.png}
+    \end{center}
+    \textcolor{blue}{Point A} is what we want to find, the minimum sufficient statistic. 
+    We lose information as we are moving to the right hand side. 
+\end{itemize}
+
+\dfn[]{Minimal sufficient statistic}{
+    A statistic is said to be minimal sufficient for $\mcF$ if it is sufficient,
+    and if $S$ is any other sufficient statistic, then $T = h(S)$ for some $h$.
+}
+Consider a binary relation in $\mcX$ defined by $\begin{cases}
+    \tilde{y}\in\mcX\\
+    \tilde{x}\in\mcX
+\end{cases}$, $\tilde{y} \:\bmR\: \tilde{x}$.
+\begin{equation*}
+    f(\tdy|\theta) = c(\tdx, \tdy)f(\tdx|\theta)\Leftrightarrow\underbrace{\frac{f(\tdy|\theta)}{f(\tdx|\theta)}}_{\text{likelihood ratio}} = c(\tdx,\tdy)
+\end{equation*}
+where $c(\tdx,\tdy) > 0$ and does not depend on $\theta$.\\
+
+This binary relation is an equivalence relation, that is, it is
+\begin{itemize}
+    \item symmetric: $\tdx\:\bmR\:\tdy \Leftrightarrow \tdy\:\bmR\:\tdx$
+    \item reflexive: $\tdx\:\bmR\:\tdx$
+    \item transitive: $\tdx\:\bmR\:\tdy$ and $\tdy\:\bmR\:\tdz\Rightarrow \tdx\:\bmR\:\tdz$
+\end{itemize}
+Hence, it induces a partition in $\mcX$ with parts
+\begin{align*}
+    \Pi_x & = \{y\in\mcX : y\:\bmR\:x\}\text{ for }x:f(x|\theta)>0 \text{ for some } \theta\in\Theta\\
+    \Pi_0 & = \{y\in\mcX : f(y|\theta)=0\quad\forall\theta\in\Theta\}
+\end{align*}
+\begin{proof}
+    Transitive\\
+
+    Consider the case where
+    \begin{align*}
+        \tdx\:\bmR\:\tdy & \Rightarrow f(\tdy|\theta) = c_1f(\tdx|\theta)\\
+        \tdy\:\bmR\:\tdz & \Rightarrow f(\tdy|\theta) = c_2f(\tdz|\theta)
+    \end{align*}
+    then we have
+    \begin{equation*}
+        c_1f(\tdx|\theta) = c_2f(\tdz|\theta) \Rightarrow f(\tdx|\theta) = \frac{c_2}{c_1}f(\tdz|\theta) \Rightarrow \tdx\:\bmR\:\tdz
+    \end{equation*}
+\end{proof}
+\thm[]{Lehmann-Scheffe}{
+    The partition with parts $\Pi_0$ and $\{\Pi_x\}$ described above is minimal sufficient, and any statistic which induces it is minimal sufficient. 
+}
+\begin{center}
+    \includegraphics[scale=0.5]{Images/10.png} $\Pi = \{\Pi_1,\Pi_2,\Pi_3,\Pi_4\}$, $G(\tdx) = \tdx_i$ if $\tdx\in\Pi_i$
+\end{center}
+\begin{proof}
+    Consider the statistic $G$ that to each $x\in\mcX$ associates a representative of the element of the partition to which it belongs
+    \begin{equation*}
+        x\in\mcX \mapsto x_{\Pi}\in\Pi_x = G(x)
+    \end{equation*}
+    \textbf{Proof that G is sufficient}\\
+
+    
+\end{proof}
+
+%\dfn{Definition Topic}{Definition Statement}
+%\thm{Theorem Name}{Theorem Statement}
+%\cor[cori]{Corollary Name}{Corollary Statement}
+%\lem{Lemma Name}{Lemma Statement}
+%\clm{Claim Name}{Claim Statement}
+%\ex{Example Name}{Example explained}
+%\opn{Open Question Name}{Question Statement}
+%\pr{Question Name}{Question Statement}
+%\nt{Special Note}
+%\wc{Wrong Concept topic}{Explanation}
+%\proof{Proof Idea}{}
