@@ -246,10 +246,154 @@ Hence, it induces a partition in $\mcX$ with parts
     \begin{equation*}
         x\in\mcX \mapsto x_{\Pi}\in\Pi_x = G(x)
     \end{equation*}
-    \textbf{Proof that G is sufficient}\\
-
-    
+    \textbf{Proof that G is sufficient}
+    \begin{gather*}
+        \tdx\in\Pi_i \Rightarrow \tdx\:\bmR\:\tdx_i\\
+        f(\tdx|\theta) = c(\tdx_i,\tdx)f(\tdx|\theta) \underset{G(\tdx)=\tdx_i}{=} \underbrace{c(\tdx_i,\tdx)}_{g(\tdx)}\underbrace{f(G(\tdx|\theta))}_{g(G;\theta)}\\
+        \Rightarrow G \text{ is sufficient}
+    \end{gather*}
+    Now \textbf{proof that $G$ is a "grosser" partition}
+    \begin{gather*}
+        U \text{ is sufficient}\\
+        \Pi_U = \{\Pi_x^*\},\quad
+        \begin{rcases}
+            \tdx\in\mcX\\
+            \tdy\in\Pi_x^*
+        \end{rcases}\rightarrow \tdx\in\Pi_i\\
+        \text{since $U$ is sufficient,}\\
+        f(\tdx|\theta) = g(U(\tdx);\theta)h(\tdx)\\
+        f(\tdy|\theta) = g(U(\tdy);\theta)h(\tdy) = g(U(\tdx);\theta)h(\tdy)\Leftrightarrow\\
+        h(\tdx)f(\tdy|\theta) = \underbrace{h(\tdx)g(U(\tdx);\theta)}_{f(\tdx|\theta)}h(\tdy)\Leftrightarrow\\
+        f(\tdy|\theta) = f(\tdx|\theta)\frac{h(\tdy|\theta)}{h(\tdx|\theta)}\Rightarrow \tdy\:\bmR\:\tdx\Rightarrow U\text{ is a finer partition than }G\\
+        \therefore G \text{ is the minimal sufficient statistic}
+    \end{gather*}
 \end{proof}
+
+\ex[]{Minimal sufficient statistic : Normal}{
+    Let $X_1,\ldots,X_n$ be a random sample from a $N(\mu,\sigma^2)$ population and let $\theta = (\mu,\sigma^2)$
+    \begin{align*}
+        f(\tdx|\theta) & = \prod_{i=1}^{n}f(x_i|\mu\sigma^2)\\
+        & = \prod_{i=1}^{n}\frac{1}{\sqrt{2\pi\sigma^2}}\exp\{-\frac{1}{2\sigma^2}(x_i-\mu)^2\}\\
+        & = (2\pi)^{-\frac{n}{2}}(\sigma^2)^{-\frac{n}{2}}\exp\{-\frac{1}{2\sigma^2}(\sum x_i^2-2n\bar{x}\mu+n\mu^2)\}\\
+        & = (2\pi)^{-\frac{n}{2}}(\sigma^2)^{-\frac{n}{2}}\exp\{-\frac{1}{2\sigma^2}\sum x_i^2\}\exp\{\frac{n\bar{x}\mu}{\sigma^2}\}\exp\{-\frac{1}{2\sigma^2}n\mu^2\}
+    \end{align*}
+    Now using the \textbf{Lehmann-Scheffe theorem},
+    \begin{align*}
+        \frac{f(\tdy|\theta)}{f(\tdx|\theta)} 
+        & = \frac{
+            (2\pi)^{-\frac{n}{2}}(\sigma^2)^{-\frac{n}{2}}\exp\{-\frac{1}{2\sigma^2}\sum y_i^2\}\exp\{\frac{n\bar{x}\mu}{\sigma^2}\}\exp\{-\frac{1}{2\sigma^2}n\mu^2\}}{
+                (2\pi)^{-\frac{n}{2}}(\sigma^2)^{-\frac{n}{2}}\exp\{-\frac{1}{2\sigma^2}\sum x_i^2\}\exp\{\frac{n\bar{x}\mu}{\sigma^2}\}\exp\{-\frac{1}{2\sigma^2}n\mu^2\}}\\
+        & = \exp\{-\frac{1}{2\sigma^2}(\sum y_i^2-\sum x_i^2)\}\exp\{\frac{n\mu}{\sigma^2}(\bar{y}-\bar{x})\}\quad \text{does not depend on }\theta\\
+        & \Leftrightarrow \begin{cases}
+            \sum y_i^2 = \sum x_i^2\\
+            \bar{y} = \bar{x}
+        \end{cases}
+    \end{align*}
+    A minimal sufficient statistic is $(\bar{x},\sum x_i^2)$ or $(\bar{x}, s^2)$
+}
+\ex[]{Minimal sufficient statistic : Exponential}{
+    Let $X_1,\ldots,X_n$ be a random sample from a $Ex(\lambda)$ population and let $\theta = \lambda$
+    \begin{gather*}
+        f(x|\lambda) = \lambda e^{-\lambda n}\, ,n>0\\
+        f(\tdx|\lambda) = \prod_{i=1}^{n}\lambda e^{-\lambda n} = \lambda^n\exp\{-\lambda\sum x_i\}\\
+        \frac{f(\tdy|\theta)}{f(\tdx|\theta)} = \frac{\lambda^n\exp\{-\lambda\sum y_i\}}{\lambda^n\exp\{-\lambda\sum x_i\}}
+        = \exp\{-\lambda(\sum y_i-\sum x_i)\}
+    \end{gather*}
+    Does not depend on $\lambda$ if and only if $\sum y_i = \sum x_i \Leftrightarrow \bar{x}=\bar{y} \Rightarrow \bar{x}$ is minimal sufficient
+}
+
+\section{Ancilarity and completeness}
+\dfn[]{Ancillary statistic}{
+    A statistic $T$ is said to be ancillary if its sampling distribution does not depend on the unknown parameter $\theta$.
+}
+$T$ is ancillary if $f_T(t|\theta)$ does not depend on $\theta$.
+\dfn[]{Location-scale family of distributions}{
+    The location-scale family of distribution is composed by all the probability distributions such that
+    the associated comulative distribution function is of the form
+    \begin{equation*}
+        G(x|\delta,\lambda) = G\left(\frac{x-\lambda}{\delta}\right)
+    \end{equation*}
+    where $G$ is a function that does not involve unknown parameters, $\lambda\in\bbR$ is the location parameter,
+    and $\delta>0$ is the scale parameter.\\
+
+    This family includes the location family ($\delta$ is known) and the scale family ($\lambda$ is known).
+}
+
+\ex[]{Location-scale family : Normal}{
+    Suppose that $X\sim N(\mu, \sigma^2)$
+    \begin{equation*}
+        \frac{x-\mu}{\sigma} \sim N(0,1)
+    \end{equation*}
+    \begin{align*}
+        f(x|\mu,\sigma^2)
+        & = P(X\leq x | \mu\sigma^2)\\
+        & = P\left(\frac{X-\mu}{\sigma}\leq\frac{x-\mu}{\sigma}|\mu,\sigma^2\right)\\
+        & = \Phi\left(\frac{x-\mu}{\sigma}\right)
+    \end{align*}
+    where $G = \Phi, \lambda = \mu, \delta = \sigma$.\\
+
+    The normal family of distributions is a member of the location-scale family with location parameter $\mu$ and scale parameter $\delta$.
+}
+\ex[]{Location-scale family : Uniform}{
+    Suppose that $X\sim U(0,\theta)$, $\theta>0$, then we have
+    \begin{equation*}
+        f(x|\theta) = \frac{1}{\theta}\, I_{(0,\theta)}(x)
+    \end{equation*}
+    \begin{align*}
+        F(x|\theta) 
+        & = \frac{x}{\theta} \underbrace{I_{(0,\theta)}(x)}_{0<x<\theta\Leftrightarrow0<\frac{x}{\theta}<1}\\
+        & = \frac{x}{\theta}\, I_{(0,1)}(\frac{x}{\theta})\\
+        & = G\left(\frac{x}{\theta}\right)
+    \end{align*}
+    where $G(y) = y\,I_{(0,1)}(y)$\\
+
+    $U(0,\theta)$ belongs to the scale family with scale parameter $\delta=\theta$ and $\lambda=0$.
+}
+
+Couple \textbf{remarks} regarding the location-scale family
+\begin{itemize}
+    \item The distribution of $X$ is part of the location-scale family with location parameter $\lambda$ and scale parameter $\delta$
+    if and only if the distribution of $\frac{(x-\lambda)}{\delta}$ does not depend on unknown parameters.
+    \item If the distribution of $X$ is a member of the location-scale family with location paratmer $\lambda$
+    and scale parameter $\delta$ then any statistic which is a function of $X_1,\ldots,X_n$ only through the vector
+    $\left(\frac{X_i-\lambda}{\delta}, i=1,\ldots,n\right)$ is ancillary.
+    \begin{equation*}
+        T = T(X_1,\ldots,X_n) = H\left(\frac{X_1-\lambda}{\delta},\ldots,\frac{X_n-\lambda}{\delta}\right),\quad T\text{ is ancillary}
+    \end{equation*}
+    TODO:
+    \textcolor{red}{Insert proof}
+\end{itemize}
+
+\ex[]{Location-scale and statistic : Uniform}{
+    Let $X|\theta \sim U(\theta - \frac{1}{2}, \theta + \frac{1}{2})$, $\theta\in\bbR$
+    \begin{equation*}
+        f(x|\theta) = \frac{1}{1}\underbrace{I_{(\theta-\frac{1}{2},\theta+\frac{1}{2})}(x)}_{\theta-\frac{1}{2}<x<\theta+\frac{1}{2}\Leftrightarrow -\frac{1}{2}<x-\theta<\frac{1}{2}} 
+        = I_{(-\frac{1}{2},\frac{1}{2})}(x-\theta) = G(x-\theta)
+    \end{equation*}
+    where $G(y) = I_{(-\frac{1}{2},\frac{1}{2})}(y)$\\
+
+    The distribution of $X$ belongs to the location family with $\lambda = \theta$ and $\delta = 1$. 
+    The distribution of $x-\theta$ does not depend on unknwon parameters.
+    \begin{equation*}
+        R = X_{(n)}-X_{(1)} = (X_{(n)}-\theta)-(X_{(1)}-\theta) = H(X_1-\theta_1,\ldots,X_n-\theta_n)
+    \end{equation*}
+}
+\begin{itemize}
+    \item It would be natural to expect a minimal sufficient statistic and an ancillary statistic to be indepenendent.
+    However, that is not the case in general.
+\end{itemize}
+\ex[]{Minimal sufficient statistic and ancillary statistic : Uniform}{
+    Let $X|\theta \sim U(\theta - \frac{1}{2}, \theta + \frac{1}{2})$
+    \begin{equation*}
+        \frac{f(\tdy|\theta)}{f(\tdx|\theta)} = \frac{I_{(y_{(n)}-\frac{1}{2},\infty)}(\theta)I_{(-\infty,y_{(1)}+\frac{1}{2})}(\theta)}{I_{(x_{(n)}-\frac{1}{2},\infty)}(\theta)I_{(-\infty,x_{(1)}+\frac{1}{2})}(\theta)}
+    \end{equation*}
+    does not depend on $\theta$ if and only if $\begin{cases}
+        x_{(n)} = y_{(n)}\\
+        x_{(1)} = y_{(1)}
+    \end{cases} \Rightarrow (x_{(1)}, x_{(n)})$ is minimal sufficient, $(x_{(n)}-x_{(1)}, x_{(1)})$ is minimal sufficient.\\
+
+    $(R, X_{(1)})$ is minimal sufficient but contains an element that is ancillary.
+}
 
 %\dfn{Definition Topic}{Definition Statement}
 %\thm{Theorem Name}{Theorem Statement}
