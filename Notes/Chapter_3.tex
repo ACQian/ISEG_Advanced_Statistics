@@ -394,6 +394,81 @@ Couple \textbf{remarks} regarding the location-scale family
 
     $(R, X_{(1)})$ is minimal sufficient but contains an element that is ancillary.
 }
+\dfn[]{Complete statistic}{
+    A statistic $T$ is said to be complete if and only if 
+    \begin{equation*}
+        E[h(T)|\theta]=0\; \forall \theta\in\Theta \Rightarrow h(T)\equiv 0
+    \end{equation*}
+}
+When $T$ is complete and $h_1(T)$ and $h_2(T)$ are two functions of $T$ that have the same expected value,
+then it must be the case that they are the same, $h_1(T) = h_2(T)$.
+\begin{proof}
+    \begin{flalign*}
+        & E_{\theta}[h_1(T)-h_2(T)] = 0\quad \forall\theta\in\Theta\\
+        & \Downarrow\\
+        & h_1(T)-h_2(T) = 0\\
+        &\Updownarrow\\
+        & h_1(T) = h_2(T)\quad \text{must be the same}
+    \end{flalign*}
+\end{proof}
+
+\thm[]{}{Any statistic that is sufficient and complete is minimal sufficient.}
+\begin{proof}
+    Assume $T$ is sufficient and complete.
+    \begin{flalign*}
+        & \exists T_1\quad T_1=g(T),\quad T_1\text{ sufficient}\\
+        & h(T) = T - \underbrace{E[T|T_1]}_{\text{function of $T_1$ because }T_1=g(T)}
+    \end{flalign*}
+    Conditional expectation: $E[X|Y=y] = \int_X x f_{X|Y=y}(x)\; dx$ which is a function of $y$.
+    This expectation could be a function of the parameter, need to make sure that it's not the case for $h(T)$ to be a statistic.
+    \begin{equation*}
+        E[T|T_1=t_1] = \int_x T(\tdx)f_{\tdx|T_1=t_1,\theta}(\tdx)\;d\tdx
+    \end{equation*}
+    Since $T_1$ is sufficient, by definition, $f_{\tdx|T_1=t_1,\theta}(\tdx)$ does not depend on $\theta\Rightarrow E[T|T_1]$ does not depend on $\theta$.
+    $\Rightarrow h(T)$ is a statistic.
+    \begin{align*}
+        E_{\theta}[h(T)] & = E_{\theta}[T]-\underbrace{E_{\theta}[E[T|T_1]]}_{\text{law of iterated expectation}}\\
+        & = E_{\theta}[T] - E_{\theta}[T] = 0
+    \end{align*}
+    Since $T$ is complete, $h(T) = 0\Leftrightarrow T=E[T|T_1] = f(T_1)$
+\end{proof}
+\wc[]{Converse}{
+    Let $X|\theta\sim U(\theta-\frac{1}{2},\theta+\frac{1}{2})$\\
+
+    $R = X_{(n)} - X_{(1)}$ which is ancillary $\to$ distribution does not depend on $\theta$\\
+
+    $T(R, X_{(1)})$ is minimal sufficient but $R$ has no information about $\theta$ so should throw away,
+    but if you throw away then it is not minimal sufficient.
+    \begin{equation*}
+        h(T) = R - \underbrace{E[R]}_{= c\text{ because $R$ is ancillary}}
+    \end{equation*}
+    $E[h(T)] = 0$ but $h(T)\neq 0\Rightarrow T$ is not complete. 
+}
+Turns out that sufficient and complete statistics operate a data reduction that is more effective than that operated by minimal sufficient statistics that are not complete.
+This is the subject of the Theorem of Basu.
+\thm[]{Basu's Theorem}{
+    Let $T$ be a sufficient and complete statistic. Then $T$ is independent of any ancillary statistic.
+}
+\begin{proof}
+    Assume\begin{itemize}
+        \item $T$ is sufficient and complete
+        \item $U$ is ancillary
+        \item $P(U\in A|T) = h_A(T)$ because conditioning on T
+    \end{itemize}
+    $h_A(T)$ is a statistic and $T$ is sufficient so does not depend on $\theta$.
+    \begin{align*}
+        P(U\in A|T=t) & = \int_x 1_A(U(\tdx))f_{\tdx|T=t,\theta}(\tdx)\, d\tdx\\
+        & = \int_{\{\tdx:U(\tdx)\in A\}}U(\tdx)f_{\tdx|T=t,\theta}(\tdx)\,d\tdx\quad \text{where $T=t,\theta$ does not depend on $\theta$ because $T$ sufficient}
+    \end{align*}
+    but $E[h_A(T)]$ could depend on $\theta$ but does not because 
+    \begin{flalign*}
+        & h_A(T) = P(U\in A|T) = E[1_A(U)|T]\to \text{Bernoulli}\\
+        & E[h_A(T)] = E[E[1_A(U)|T]] = E[1_A(U)] = \underbrace{P(U\in A)}_{\text{marginal probability}} = c\quad \text{does not depend on $\theta$, so a constant}\\
+        & h_A(T) - c\quad \text{still a statistic because (statistic - constant) = statistic}\\
+        & E[h_A(T) - c] = 0 \overset{T \text{ complete}}{\Longrightarrow} h_A(T) = c \overset{A \text{ arbitrary}}{\Longleftrightarrow} P(U\in A|T) = P(U\in A)
+    \end{flalign*}
+    $\Rightarrow$ $U$ and $T$ are independent.
+\end{proof}
 
 %\dfn{Definition Topic}{Definition Statement}
 %\thm{Theorem Name}{Theorem Statement}
