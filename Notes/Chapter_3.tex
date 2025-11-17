@@ -611,9 +611,162 @@ In fact, it is more approriately defined as
 \end{equation*}
 that is, up to a multiplying constant. This multiplying constant can depend on $x_1,\ldots,x_n$ but not on $\theta$. 
 \ex[]{Proportional : Poisson}{
-    
+    \begin{align*}
+        f(x) & \propto \frac{\lambda^x}{x!} = c\frac{\lambda^x}{x!}\\
+        \sum_{x=0}^{\infty} = 1 & \Leftrightarrow \sum_{x=0}^{\infty} c\frac{\lambda^x}{x!} = 1\\
+        & \Leftrightarrow c\sum_{x=0}^{\infty}\frac{\lambda^x}{x!} = 1\\
+        & \Leftrightarrow ce^\lambda = 1\\
+        & \Leftrightarrow c = e^{-\lambda}
+    \end{align*}
+    Anything that is not associated with the sample can be taken out.
 }
-What bears meaning
+What bears meaning are ratios like 
+\begin{equation*}
+    \frac{L(\theta'|x_1,\ldots,x_n)}{L(\theta^*|x_1,\ldots,x_n)}
+\end{equation*}
+which measures how likely is $\theta'$ compared to $\theta^*$ having observed thet data $x_1,\ldots,x_n$.
+\nt{The ratio has a meaning, but individual values at differnet $\lambda$ doesn't mean anything.}
+With this definition, the likelihood function depends on the data only through the observed value of a \textbf{sufficient statistic}.
+\begin{equation*}
+    f(\tdx|\theta) = g(T(\tdx);\theta)h(\tdx)\Rightarrow L(\theta|\tdx)\propto g(\tdx|\theta)\propto g(T(\tdx);\theta)
+\end{equation*}
+Also note that 
+\begin{equation*}
+    \frac{\partial \ln(f(x|\theta))}{\partial\theta} = \frac{\partial\ln(L(\theta|x))}{\partial\theta}
+\end{equation*}
+\begin{proof}
+    \begin{align*}
+        L(\theta|x) & = cf(x|\theta)\\
+        \ln(L(\theta|x)) & = \ln c + \ln(f(x|\theta))\\
+        \frac{\partial \ln(f(x|\theta))}{\partial\theta} & = \frac{\partial\ln(L(\theta|x))}{\partial\theta}
+    \end{align*}
+    Need to differentiate regarding to $\theta$.
+\end{proof}
+
+Let us consider the case $\Theta\in\bbR$. We have \textbf{regularity conditions:}
+\begin{itemize}
+    \item C1: $\Theta$ is an open interval of $\bbR$
+    \item C2: The set $\{x: f(x|\theta)>0\}$, i.e. the support of $f(\cdot|\theta)$ does not depend on $\theta$
+    \item C3: The function $f(x|\theta), x\in\mcX, \theta\in\Theta$, is differentiable in $\theta$ for all $x$
+    \item C4: We have $0<E_{\theta}\left[\frac{\partial\ln f(X|\theta)}{\partial\theta}\right]^2<\infty$ for all $\theta$
+    \item C5: It is ok to permute the symbols $\frac{\partial}{\partial\theta}$ and $\int dx$
+\end{itemize}
+
+\dfn[]{Score function}{
+    Having observed the sample $x_1,\ldots,x_n$, the score function measures the relative variation of the likelihood function as a function of $\theta$
+    \begin{equation*}
+        S(\theta|x_1,\ldots,x_n) = \frac{L'(\theta|x_1,\ldots,x_n)}{L(\theta|x_1,\ldots,x_n)} = \frac{\partial\ln L(\theta|x_1,\ldots,x_n)}{\partial\theta}
+    \end{equation*}
+}
+For an iid random sample, we have $S(\theta|x_1,\ldots,x_n) = \sum_{i=1}^{n}S(\theta|x_i)$ where $S(\theta|x_i)$ is the score function 
+associated with the $i$th observation.
+\begin{proof}
+    \begin{align*}
+        L(\theta|x_1,\ldots,x_n) & \propto \prod_{i=1}^{n}f(x_i|\theta)\Rightarrow\\
+        \ln L(\theta|x_1,\ldots,x_n) & = c + \sum_{i=1}^{n}\ln f(x_i|\theta)\\
+        & = c^* + \sum_{i=1}^{n}\ln L(\theta|x_i)\\
+        \frac{\ln L(\theta|x_1,\ldots,x_n)}{\partial\theta} & = \sum_{i=1}^{n}\frac{\ln L(\theta|x_i)}{\partial\theta} = \sum_{i=1}^{n}S(\theta|x_i)
+    \end{align*}
+\end{proof}
+\thm[]{}{
+    Under the regularity conditions, we have that for all $\theta\in\Theta$
+    \begin{equation*}
+        E_{\theta}[S(\theta|X_1,\ldots,X_n)] = 0
+    \end{equation*}
+}
+\begin{proof}
+    The idea is that if 1 is zero, the sum is also zero $\to E[S(\theta|x_i)]=0$
+    \begin{align*}
+        E[S(\theta|x_i)] & = \int_x \frac{\partial \ln f(x|\theta)}{\partial\theta}f(x|\theta)\, dx\\
+        & = \int_x \frac{\frac{\partial f(x|\theta)}{\partial\theta}}{f(x|\theta)}f(x|\theta)\, dx\\
+        & = \int_x\frac{\partial f(x|\theta)}{\partial\theta}\, dx\\
+        & = \frac{\partial}{\partial\theta}\underbrace{\int_x f(x|\theta)\, dx}_{=1}\\
+        & = \frac{\partial}{\partial\theta} 1 = 0
+    \end{align*}
+\end{proof}
+
+\dfn[]{Fisher information}{
+    The Fisher information about $\theta$ contained in $X_1,\ldots,X_n$ is defined by 
+    \begin{equation*}
+        I_{(X_1,\ldots,X_n)}(\theta) = E_{\theta}\{[S(\theta|X_1,\ldots,X_n)]^2\}
+    \end{equation*}
+}
+\textbf{Properties under the regularity condition:}
+\begin{itemize}
+    \item $I_{(X_1,\ldots,X_n)}(\theta) = Var[S(\theta|X_1,\ldots,X_n)]$
+    \begin{proof}
+        $Var(x) = E[x^2]-E^2[x]$ since $E[x]=0\Rightarrow Var(x) = E[x^2]$
+        with $x$ being the score function.
+    \end{proof}
+    \item If $X = (X_1,X_2)$ with $X_1$ and $X_2$ independent $\forall \theta$, then
+    \begin{equation*}
+        I_X(\theta) = \sum_{i=1}^{2}I_{X_i}(\theta)
+    \end{equation*}
+    \begin{proof}
+        \begin{align*}
+            f(\tdx_1m\tdx_2|\theta) & = f(\tdx_1|\theta)f(\tdx_2|\theta)\\
+            \ln f(\tdx_1m\tdx_2|\theta) & = \ln f(\tdx_1|\theta)+\ln f(\tdx_2|\theta)\\
+            \frac{\partial \ln f(\tdx_1m\tdx_2|\theta)}{\partial\theta} & = \frac{\partial\ln f(\tdx_1|\theta)}{\partial\theta}+\frac{\partial\ln f(\tdx_2|\theta)}{\partial\theta}\\
+            S(\theta|\tdx_1,\tdx_2) & = S(\theta|\tdx_1)+ S(\theta|\tdx_2)\\
+            I_{\tdx_1,\tdx_2}(\theta) & = Var(S(\theta|\tdx_1,\tdx_2)) = Var(S(\theta|\tdx_1)+ S(\theta|\tdx_2))\\
+            & = Var(S(\theta|\tdx_1)+ S(\theta|\tdx_2)) = I_{\tdx_1}(\theta) + I_{\tdx_2}(\theta)
+        \end{align*}
+    \end{proof}
+    \item Consequently, in the case of an iid random sample, $I_{(X-1,\ldots,X_n)}(\theta) = nI_{X_i}(\theta)$
+    \item Useful formula to compute $I$
+    \begin{equation*}
+        I_{(X_1,\ldots,X_n)}(\theta) = E[S^2(\theta|X)] = -E\left[\frac{\partial S(\theta|X)}{\partial\theta}\right] 
+        = -E\left[\frac{\partial^2\ln L(\theta|X)}{\partial\theta^2}\right]
+    \end{equation*}
+\end{itemize}
+\thm[]{}{
+    If $T(X_1,\ldots,X_n)$ is a statistic, and under regularity conditions, 
+    \begin{equation*}
+        I_{(X_1,\ldots,X_n)}(\theta) \geq I_T(\theta)
+    \end{equation*}
+    and the equality holds if and only if $T$ is sufficient for $\theta$.
+}
+This makes sense as statistics contains all information needed but still performs data reduction.
+\thm[]{}{
+    Consider the alternative parametrization $\theta = g(\phi)$ with $g$ differentiable. 
+    Then the Fisher information about $\phi$ in $X$, $I_X^*(\phi)$ satisfies 
+    \begin{equation*}
+        I_X^*(\phi) = I_X(g(\phi))[g'(\phi)]^2
+    \end{equation*}
+    with $I_X(\theta)$ representing the Fisher about $\theta$ in $X$.
+}
+\wc[]{Poisson alternative parametrization}{
+    \begin{flalign*}
+        & \phi = \frac{1}{\lambda}\Leftrightarrow \lambda = \frac{1}{\phi}, \quad I_X(\lambda) = \frac{1}{\lambda}\\
+        & I_X^*(\phi) = ?\\
+        & I_X^*(\phi) = I_X(\frac{1}{\phi}) = \lambda \Rightarrow \text{WRONG}
+    \end{flalign*}
+}
+\ex[]{Alternative parametrization : Poisson}{
+    Through brute force computation,
+    \begin{align*}
+        f(x|\phi) & = e^{-\frac{1}{\phi}}\frac{(\frac{1}{\phi})^x}{x!}\\
+        \ln f(x|\phi) & = -\frac{1}{\phi} - x\ln\phi+c\\
+        \frac{\partial f}{\partial\phi} & = \frac{1}{\phi^2} - \frac{x}{\phi}\\
+        \frac{\partial^2\ln f}{\partial\phi^2} & = -2\phi^{-3}+\frac{x}{\phi^2}\\
+        I_X^*(\phi) & = -E[-2\phi^{-3}+\frac{x}{\phi^2}] = \frac{2}{\phi^3}-\frac{\frac{1}{\phi}}{\phi^2} = \frac{2}{\phi^3}-\frac{1}{\phi^3} = \frac{1}{\phi^3}
+    \end{align*}
+    Through the theorem,
+    \begin{align*}
+        \phi & = \frac{1}{\lambda} \Leftrightarrow \lambda = \frac{1}{\phi} = g(\phi)\\
+        g'(\phi) & = -\frac{1}{\phi^2}\\
+        I_X^*(\phi) & = I_X(\frac{1}{\phi})[g'9\phi]^2 = \phi\frac{1}{\phi^4} = \frac{1}{\phi^3}
+    \end{align*}
+}
+The ideas the properties that we have described for the case $\Theta\in\bbR$ can be naturally extended to the multiparametric case $\Theta\subset\bbR^k$.
+Only difference is for the alternative parameterization
+\begin{equation*}
+    I_X^*(\phi) = J'I_X(g(\phi))J
+\end{equation*}
+where $J$ is a matrix of order $k$ whose $i$th line is 
+\begin{equation*}
+    \left(\frac{\partial g_i(\phi)}{\partial\phi_1},\cdots,\frac{\partial g_i(\phi)}{\partial\phi_k}\right)
+\end{equation*}
 
 
 
