@@ -360,8 +360,17 @@ Couple \textbf{remarks} regarding the location-scale family
     \begin{equation*}
         T = T(X_1,\ldots,X_n) = H\left(\frac{X_1-\lambda}{\delta},\ldots,\frac{X_n-\lambda}{\delta}\right),\quad T\text{ is ancillary}
     \end{equation*}
-    TODO:
-    \textcolor{red}{Insert proof}
+    \begin{proof}
+        X belongs to the location-scale family
+        \begin{flalign*}
+            & \Leftrightarrow F(X) = P(X\leq x) = G\left(\frac{X-\lambda}{\delta}\right)\\
+            & \Rightarrow P\left(\frac{X-\lambda}{\delta}\leq x\right) = P(X\leq\delta x+\lambda) = G\left(\frac{\delta x+\lambda-\lambda}{\delta}\right) = G(x)\to\text{ doesn't depend on }(\lambda,\delta) 
+        \end{flalign*}
+        Let $G$ be the CDF of $Y = \frac{X-\lambda}{\delta} \Leftrightarrow X = \delta Y+\lambda$
+        \begin{equation*}
+            P(X\leq x) = P(\delta Y + \lambda \leq x) = P\left(Y\leq \frac{x-\lambda}{\delta}\right) = G\left(\frac{x-\lambda}{\delta}\right)
+        \end{equation*}
+    \end{proof}
 \end{itemize}
 
 \ex[]{Location-scale and statistic : Uniform}{
@@ -469,6 +478,146 @@ This is the subject of the Theorem of Basu.
     \end{flalign*}
     $\Rightarrow$ $U$ and $T$ are independent.
 \end{proof}
+A couple \textbf{remarks}:
+\begin{itemize}
+    \item A complete and sufficient statistic does not contain any ancillary information, that is, 
+    the data reduction operated by this type of statistics is more effective than that opearted by minimal sufficient statistics which are not complete.
+    \item Either all the minimal sufficient statistics are complete or there are no sufficient and complete statistics.
+    \begin{center}
+        \includegraphics[scale=0.7]{Images/11.png}
+    \end{center}
+\end{itemize}
+
+\section{Exponential family}
+\dfn[]{Exponential family of distribution}{
+    We say that a random vector $X$ is distributed according to a member of the k-parametric exponential family if its pdf or pmf can be expressed in the form 
+    \begin{equation*}
+        f(x|\theta) = c(\theta)\: h(x)\: \exp\left[\sum_{j=1}^{k}\omega_j(\theta)\: R_j(x)\right]
+    \end{equation*}
+    with support $\{x: f(x|\theta)>0\}$ independent of $\theta = (\theta_1,\ldots,\theta_k)$. Also, $c(\theta)\geq 0, h(x)\geq 0$, and $R_j(x)$ are scalar functions of $x$.
+}
+The \textbf{canonical form} of a distribution which belongs to the k-parameter exponential family is obtained through the so-called natural parametrization, 
+$\alpha_j = \omega_j(\theta)$, $j = 1,\ldots,k$
+\begin{equation*}
+    f(x|alpha) = d(\alpha)\: h(x)\: \exp\left[\sum_{j=1}^{k}\alpha_j\: R_j(x)\right]
+\end{equation*}
+where $\alpha = (\alpha_1,\ldots,\alpha_k)\in A$ is called the natural parameter and $A$ being called the natural parameteric space.
+\ex[]{Exponential family : Normal}{
+    \begin{align*}
+        f(X|\mu,\sigma^2) & = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{\frac{-1}{2\sigma^2}(X-\mu)^2\right\}\\
+        & = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{\frac{-1}{2\sigma^2}(X^2-2\mu X-\mu^2)\right\}\\
+        & = \underbrace{\frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{\frac{-\mu X}{2\sigma^2}\right\}}_{c(\theta)}
+        \exp\left\{\underbrace{\frac{-1}{2\sigma^2}}_{\omega_1(\theta)}\underbrace{X^2}_{R_1(X)}+\underbrace{\frac{\mu}{\sigma^2}}_{\omega_2(\theta)}\underbrace{X}_{R_2(X)}\right\}
+    \end{align*}
+    $\Rightarrow$ The Normal distribution belongs to the 2-parameters exponential family.\\
+
+    Natural parameterization of the Normal distribution is 
+    \begin{flalign*}
+        & \alpha_1 = \frac{-1}{2\sigma^2}\quad \alpha_2 = \frac{\mu}{\sigma^2}\\
+        & (\alpha_1,\alpha_2) \in \bbR\times\bbR\to \text{ the natural parameter space}
+    \end{flalign*}
+}
+\ex[]{Exponential family : Poisson}{
+    \begin{align*}
+        f(x|\theta) & = e^{-\theta}\frac{\theta^x}{x!} = e^{-\theta}\frac{1}{x!}\exp(\ln\theta^x)\\
+        & = \underbrace{e^{-\theta}}_{c(\theta)}\underbrace{\frac{1}{x!}}_{h(x)}\exp\left(\underbrace{\ln\theta}_{\omega_1(\theta)}\underbrace{x}_{R_1(x)}\right)
+    \end{align*}
+    $\Rightarrow$ The Poisson distribution is a member of the 1-parameter exponential family.
+}
+\thm[]{}{
+    The k-parameter exponential family structure is preserved under iid random sampling and there is a k-dimentional sufficient statistic
+    regardless of the sample size.
+}
+\begin{proof}
+    $X_1,\ldots,X_n$ random sample from a model that is a member of the k-parameter exponential family.
+    \begin{align*}
+        f(\tdx|\tilde{\theta}) & = \prod_{i=1}^{n}f(x_i|\tilde{\theta}) = \prod_{i=1}^{n} c(\tilde{\theta}) h(x_i)\exp(\sum_{j=1}^{k}w_j(\theta)R_j(x_i))\\
+        & = [c(\tilde{\theta})]^n \prod_{i=1}^{n}h(x_i)\exp(\sum_{i=1}^{n}\sum_{j=1}^{k}w_j(\theta)R_j(x_i))\\
+        & = c^*(\theta)h^*(\tdx)\exp(\underbrace{\sum_{j=1}^{k}w_j(\theta)}_{w_j(\theta)}\underbrace{\sum_{i=1}^{n}R_j(x_i)}_{R^*(\tdx)=T_j(\tdx)})\\
+        & = \underbrace{c^*(\theta)\exp(\sum_{j=1}^{k}w_j(\theta)T_j(\tdx))}_{g(\tdT;\theta)}\underbrace{h^*(\tdx)}_{h^*(\tdx)}
+    \end{align*}
+    $T = (T_1,\ldots,T_k)$ is a sufficient statistic by the factorization criterion.
+\end{proof}
+\thm[]{}{
+    The sufficient statistic $T = (T_1(X),\ldots,T_k(X))$ just described is complete if the natural parametric space $A$ contains an open subset of $\bbR^k$
+}
+\includegraphics[scale=0.4]{Images/12.png} $\Rightarrow$ Contains an open subset of $\bbR^k$\\
+
+\includegraphics[scale=0.4]{Images/13.png} $\Rightarrow$ Doesn't contain an open subset of $\bbR^k$
+
+\ex[]{Sufficient, complete, and minimal sufficient : Normal}{
+    \begin{flalign*}
+        & \alpha_1 = \frac{-1}{\sigma^2} \in \bbR_{-}\\
+        & \alpha_2 = \frac{\mu}{\sigma^2} \in \bbR
+    \end{flalign*}
+    \begin{center}
+        \includegraphics[scale=0.4]{Images/14.png}
+    \end{center}
+    $\Rightarrow (T_1,T_2)$ is complete it was already sufficient $\Rightarrow (T_1,T_2)$ is sufficient and complete $\Rightarrow$ minimal sufficient
+}
+\ex[]{Basu : $\bar{X}, S^2$ independet in Normal}{
+    Begin by assuming that the variance is known, $\sigma^2 = \sigma^2_0$\\
+
+    $N(\mu,\sigma_0^2)$ belongs to the 1-parameter exponential family
+    \begin{flalign*}
+        & \exp\left\{
+            \underbrace{\frac{-1}{2\sigma_0^2}x^2}_{\text{(all known)} x^2} + \frac{\mu}{\sigma_0^2}x
+        \right\}\\
+        & \alpha_1 = \frac{\mu}{\sigma_0^2}\quad T_1 = \sum x_i
+    \end{flalign*}
+    $\Rightarrow T_1$ is sufficient and complete $\Rightarrow \bar{X}$ is sufficient and complete\\
+
+    And since $\sigma^2$ is known, the Normal distribution is also part of the location family with parameter $\mu$
+    \begin{equation*}
+        S^2 = \frac{1}{n}\sum_{i=1}^{n}(x_i-\bar{x})^2 = \frac{1}{n}\sum_{i=1}^{n}((x_i-\mu)(\bar{x}-\mu))^2 = \frac{1}{n}\sum_{i=1}^{n}[(x_i-\mu)-\frac{1}{n}\sum_{i=1}^{n}(x_i-\mu)]^2 = (\cdots)
+    \end{equation*}
+    Essentially, $S^2 = H(x_i-\mu,\; i=1,\ldots,n)\Rightarrow S^2$ is ancillary 
+    \begin{equation*}
+        P(\bar{X}\leq t, S^2\leq s|\mu,\sigma_0^2) = P(\bar{X}\leq t|\mu,\sigma_0^2)P(S^2\leq s|\mu,\sigma_0^2)\quad \forall \sigma_0^2\to\text{ arbitrary}
+    \end{equation*}
+    $\Rightarrow \bar{X}$ and $S^2$ are independent in the Normal 2-parameter model
+}
+\clm[]{}{
+    When we restrict a model, sufficiency is maintained, completeness not always.
+}
+\ex[]{Restricing a model : Normal}{
+    Suppose that $X\sim N(\mu,\sigma^2)$ but consider a sub-family $\mu=\sigma^2$\\
+
+    Clearly, $T=(S^2,\bar{X})$ is still sufficient for this sub-family. However, the natural parameter space no longer contains an open subset of $\bbR^2$ so that the previous theorem (3.3.2)
+    does not guarantee the completeness of $T$.\\
+
+    It is easy to see that $T$ is in this setting not complete as $\displaystyle\frac{\bar{X}-nS^2}{(n-1)}$ is a function of $T$ which has zero expected value but is obviously not null.
+}
+
+\section{Fisher information}
+\dfn[]{Likelihood function}{
+    When we observe the sample $(x_1,\ldots,x_n)$, the observed value of the random sample $X_1,\ldots,X_n$ with joint pdf or pmf function $f(x_1,\ldots,x_n)$,
+    the corresponding likelihood function is a function of $\theta$ given by 
+    \begin{equation*}
+        L(\theta|x_1,\ldots,x_n) = f(x_1,\ldots,x_n|\theta)
+    \end{equation*}
+}
+Essentially it shows how likely it is to observe the sample given the parameter. 
+And since $x_1,\ldots,x_n$ is fixed, it's usual to write $L(\theta)$ instead of $L(\theta|x_1,\ldots,x_n)$. 
+Note that $L$ is a function of $\theta$ and not of $x_1,\ldots,x_n$.
+If \textbf{$X_1,\ldots,X_n$ is an iid random sample}, we have 
+\begin{equation*}
+    L(\theta|x_1,\ldots,x_n) = f(x_1,\ldots,x_n|\theta) = \prod_{i=1}^{n}f(x_i|\theta)
+\end{equation*}
+The likelihood function is not a probability mass or density function. Hence it has no natural scale associated.
+In fact, it is more approriately defined as 
+\begin{equation*}
+    L(\theta|x_1\ldots,x_n) \propto f(x_1,\ldots,x_n|\theta)
+\end{equation*}
+that is, up to a multiplying constant. This multiplying constant can depend on $x_1,\ldots,x_n$ but not on $\theta$. 
+\ex[]{Proportional : Poisson}{
+    
+}
+What bears meaning
+
+
+
+
 
 %\dfn{Definition Topic}{Definition Statement}
 %\thm{Theorem Name}{Theorem Statement}
