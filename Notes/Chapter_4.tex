@@ -1,0 +1,383 @@
+\chapter{Parametric Point Estimation}
+
+The context of the problem:
+\begin{itemize}
+    \item Parametric statistical model for $\bar{X}, \mcF=\{f(\cdot|\theta): \theta\in\Theta\}$
+    \item $X_1,\ldots,X_n$ are iid random sample of size $n$ extracted from $X$
+    \item Samples space is denoted by $\mcX$
+\end{itemize}
+The problem itself:
+\begin{itemize}
+    \item To produce a \textbf{point estimate of $\theta$}, that is, select an application $x\in\mcX\mapsto T(x)\in\Theta$
+    that to each observed sample associates a value for $\theta$
+    \item The application $T$ is a statistic which we call an \textbf{estimator} for $\theta$ and the observed value of $T(x)$ is called the \textbf{estimate}
+    \item We may be interested in estimating a function of $\theta, \tau(\theta)$
+\end{itemize}
+
+\section{Optimality criteria}
+
+In frequentist statistics, the quality of an estimator is assessed by looking at the population of estimates it produces, that is, at its sampling distribution.
+We are \textbf{evalauting the estimator} and not the estimate.
+\nt{
+    $E[\bar{X}] = \lambda\to$ pre-experimental.\\
+    $\bar{X}\to$ post-experimental, not so intersted in this accuracy.
+}
+
+\subsection{Unbiasedness}
+
+\dfn[]{Unbiased estimator}{
+    An estimator $T$ is said to be an unbiased estimator of $\tau(\theta)$ if and only if 
+    \begin{equation*}
+        \forall \theta\in\Theta\quad E_{\theta}[T] = \tau(\theta)
+    \end{equation*}
+}
+
+In practice, this means that if we use $T$ to estimate $\tau(\theta)$ a very large number of times,
+then the average of the estimates will be close to $\tau(\theta)$ no matter the true value of $\theta$.
+\begin{proof}
+    $E[T(\tdx)] = \tau(\theta)$
+    \begin{equation*}
+        \begin{cases}
+            \tdx_1\to T(\tdx_1)\\
+            \vdots\\
+            \tdx_N\to T(\tdx_N)
+        \end{cases}\Rightarrow \frac{1}{N}\sum_{i=1}^{N}T(\tdx_i)\overset{LLN}{=}\tau(\theta)
+    \end{equation*}
+\end{proof}
+
+The quantity $b(T) = E[T|\theta] - \tau(\theta)$ is known as the \textbf{bias of the estimator of $\tau(\theta)$}.
+An estimator which is not unbiased is said to be biased.
+There are cases where an unbiased estimator cannot be found.
+In general, the sample mean is an unbiased estimator of the population mean as long as it exists.
+The bias-corrected variance is an unbiased estimator of the population variance as long as it exists.
+By restricting the class of interesting estimators to the class of unbiased estimators, we may miss intersting estimators.
+
+\subsection{Most efficient estimation}
+
+\dfn[]{More efficient estimator}{
+    Let $T$ and $T^*$ be two \textbf{unbiased} estimators of $\tau(\theta)$. We say that $T$ is more efficient than $T^*$ in the estimation of $\tau(\theta)$ if 
+    \begin{equation*}
+        Var_{\theta}(T)\leq Var_{\theta}(T^*),\quad \forall \theta\in\Theta
+    \end{equation*}
+}
+
+\thm[]{Cramer-Rao inequality}{
+    Consider a statistical model satisfying the \textbf{regularity conditions} with $\Theta\subset\bbR$,
+    and let $\tau(\theta)$ be a differentiable function. Let $T$ be an \textbf{unbiased estimator} of $\tau(\theta)$ with finite variance.
+    Additionally, assume that $\forall\theta\in\Theta$
+    \begin{flalign*}
+        & E_{\theta}[T(X-1,\ldots,X_n)S(\theta|X_1,\ldots,X_n)] < +\infty\\
+        & E_{\theta}[T(X-1,\ldots,X_n)S(\theta|X_1,\ldots,X_n)] = \tau'(\theta) \to (1)
+    \end{flalign*}
+    in which case we say that $T$ is a \textbf{regular estimator}. Then,
+    \begin{equation*}
+        Var_{\theta}(T) \geq \frac{[\tau'(\theta)]^2}{nI_{X}(\theta)}\to\text{ Cramer-Rao lower bound (CRLB)}
+    \end{equation*}
+}
+\begin{proof}
+    $(1): E_{\theta}[T(X-1,\ldots,X_n)S(\theta|X_1,\ldots,X_n)] = \tau'(\theta)$
+    \begin{align*}
+        E[TS] & = \int_x T(\tdx)\frac{\partial \ln f(\tdx|\theta)}{\partial\theta}f(\tdx|\theta)\,d\tdx 
+        = \int_x T(\tdx)\frac{\frac{\partial f(\tdx|\theta)}{\partial\theta}}{f(\tdx|\theta)}f(\tdx|\theta)\,d\tdx\\
+        & = \int_x \frac{\partial T(\tdx)f(\tdx|\theta)}{\partial\theta}\,d\tdx 
+        = \frac{\partial}{\partial\theta}\int_x T(\tdx)f(\tdx|\theta)\,d\tdx 
+        = \frac{\partial}{\partial\theta}E[T] = \tau'(\theta)
+    \end{align*}
+\end{proof}
+\begin{proof}
+    Cramer-Rao inequality
+    \begin{equation*}
+        Cov(T,S) = E[TS] - E[T]\underbrace{E[S]}_{=0, \text{ regularity condition}} = E[TS] = \tau'(\theta)
+    \end{equation*}
+    Using Cauchy-Swartz inequality,
+    \begin{flalign*}
+        & [\rho(T,S)]^2\leq 1\Leftrightarrow\\
+        & \left[\frac{Cov(T,S)}{\sqrt{Var(T)Var(S)}}\right]^2\leq 1\Leftrightarrow \frac{[\tau'(\theta)]^2}{Var(T)Var(S)}\leq 1\Leftrightarrow\\
+        & Var(T) \geq \frac{[\tau'(\theta)]^2}{\underbrace{Var(S)}_{= I_{\tdx}(\theta)\text{ regularity condition}}} = \frac{[\tau'(\theta)]^2}{I_{\tdx}(\theta)}
+    \end{flalign*}
+\end{proof}
+
+The Cramer-Rao lower bound is only meaningful under the regularity conditions. 
+Even when then regularity conditions are satisfied, there might not exist an estimator whose variance equals the CRLB.
+
+\dfn[]{Efficiency}{
+    The ratio between the CRLB and the variance of an \textbf{unbiased estimator} of $\tau(\theta)$ is known as efficiency 
+    \begin{equation*}
+        e(T) = \frac{\text{CRLB}}{Var_{\theta}(T)}
+    \end{equation*}
+}
+If the regularity conditions are satisfied, $0\leq e(T) \leq 1$. And if $T$ is an \textbf{unbiased} estimator of $\tau(\theta)$ and $e(T) = 1$, 
+then $T$ is known as the \textbf{most efficient estimator} of $\tau(\theta)$.
+There is also the notion of \textbf{asymptotic efficiency} $\lim_{n\to\infty}e(T)$ and also of asymptotically most efficient estimators.
+\ex[]{Most efficient estimator : Poisson}{
+    $X_1, \ldots, X_n\sim Po(\lambda)$
+    \begin{flalign*}
+        & \tau(\theta) = \lambda\Rightarrow\tau'(\theta) = 1\\
+        & Var(T) \geq \frac{1}{I_x(\lambda)} = \frac{\lambda}{n}\\
+        & Var(\bar{X}) = \frac{\lambda}{n} = \text{CRLB}\Rightarrow \bar{X}\text{ is the most efficient estimator of }\lambda
+    \end{flalign*}
+    Another case,
+    \begin{flalign*}
+        & \tau(\theta) = e^{-\lambda}\Rightarrow \tau'(\theta) = -e^{-\lambda}\\
+        & Var(W) \geq \frac{e^{-2\lambda}}{n/\lambda} = \frac{\lambda e^{-2\lambda}}{n}\\
+        & \Rightarrow \text{If I find the estimator with this variance, then I've found the most efficient estimator}
+    \end{flalign*}
+}
+
+\cor[]{CR theorem: Existance of most efficient estimator}{
+    Let $T$ be a \textbf{regular and unbiased} estimator of $\tau(\theta)$.
+    Then $T$ is the most efficient estimator of $\tau(\theta)$ if and only if there exists $a(\theta)$ such that 
+    \begin{equation*}
+        S(\theta|x_1,\ldots,x_n) = a(\theta)[T(x_1,\ldots,x_n)-\tau(\theta)]
+    \end{equation*}
+}
+\begin{proof}
+    Begin with the condition of the Cauchy-Swartz inequality 
+    \begin{equation*}
+        T = a + bS \Leftrightarrow S = a + bT
+    \end{equation*}
+    Since $E[S] = 0$,
+    \begin{equation*}
+        0 = a + b\tau(\theta) \Leftrightarrow a = -b\tau(\theta)\Rightarrow S = -b\tau(\theta) + bT \Leftrightarrow S = b(T - \tau(\theta))
+    \end{equation*}
+\end{proof}
+
+\cor[]{Sufficient \& 1-parameter exponential family}{
+    The CRLB in the estimation of $\tau(\theta)$ is attained by an estimator $T$ if and only if 
+    $T$ is a \textbf{sufficient} statistic in the \textbf{one-parameter exponential family} with density 
+    \begin{equation*}
+        f(x) = h(x) c(\theta) \exp[Q(\theta)T(x)]
+    \end{equation*}
+    where $c(\theta) = \int a(\theta)\tau(\theta)\, d\theta$ and $Q(\theta) = \int a(\theta)\,d\theta$.
+}
+\begin{proof}
+    \begin{flalign*}
+        & S(\theta|\tdx) = \frac{\partial \ln f(\tdx|\theta)}{\partial\theta} = a(\theta)[T-\tau(\theta)]\\
+        & \Rightarrow \ln f(\tdx|\theta) = A(\theta)T - B(\theta)+c(\tdx)\\
+        & \Rightarrow f(\tdx|\theta) = \underbrace{e^{c(\tdx)}}_{h(\tdx)}\overbrace{\underbrace{e^{-B(\theta)}}_{c(\theta)}\exp\{\underbrace{A(\theta)}_{\omega_1(\theta)}\underbrace{T(\tdx)}_{R_1(\tdx)}\}}^{g(T;\theta)}
+    \end{flalign*}
+\end{proof}
+
+If there is a most efficient estimator for $\tau(\theta)$ then $T$ must be suffcient for $\theta$.
+There aren't most efficient estimators in models that do not admist one-dimentional sufficient statistics.
+
+\ex[]{Most efficient estimator : Bernoulli}{
+    $X\sim B(1,\theta)$
+    \begin{flalign*}
+        & f(\tdx|\theta) = \prod_{i=1}^{n}\theta^{x_i}(1-\theta)^{1-x_i} = \theta^{\sum x_i}(1-\theta)^{n-\sum x_i}\\
+        & \ln f(\tdx|\theta) = \sum x_i\ln\theta + (n-\sum x_i)\ln(1-\theta)\\
+        & S(\theta|\tdx) = \frac{\partial\ln f(\tdx|\theta)}{\partial\theta} = \frac{\sum x_i}{\theta} + (n-\sum x_i)\frac{-1}{1-\theta} = \cdots 
+        = \frac{1}{\theta(1-\theta)}(\sum x_i-n\theta) = \frac{n}{\theta(1-\theta)}(\bar{X}-\theta)\\
+        & \Rightarrow \bar{X} \text{ is the most efficient estimator of }\theta
+    \end{flalign*}
+    \begin{flalign*}
+        & E[\bar{X}] = \theta = \tau(\theta)\\
+        & Var(\bar{X}) = \frac{[\tau'(\theta)]^2}{nI_X(\theta)} = \frac{1}{nI_X(\theta)}\\
+        & \text{since }Var(\bar{X}) = \frac{\theta(1-\theta)}{n} = \frac{1}{nI_X(\theta)} \Rightarrow nI_X(\theta) = \frac{1}{\theta(1-\theta)}
+    \end{flalign*}
+}
+\ex[]{Most efficient estimator : Exponential}{
+    $X\sim Ex(\lambda)$
+    \begin{flalign*}
+        & f(x|\lambda) = \lambda e^{-\lambda x},\quad x>0\\
+        & f(\tdx|\theta) = \prod_{i=1}^{n}\lambda e^{-\lambda x_i} = \lambda^n e^{-\lambda\sum x_i}\\
+        & \ln f(\tdx|\lambda) = n\ln\lambda - \lambda\sum x_i\\
+        & S(\lambda|\tdx) = \frac{\partial f(\tdx|\lambda)}{\partial\lambda} = \frac{n}{\lambda} - \sum x_i 
+        = \underbrace{-n}_{a(\lambda)}(\underbrace{\bar{X}}_{T} - \underbrace{\frac{1}{\lambda}}_{\tau(\lambda)})
+    \end{flalign*}
+    $\bar{X}$ is the most efficient estimator of $\tau(\lambda) = \frac{1}{\lambda}\to \tau'(\lambda) = -\frac{1}{\lambda^2}$
+    \begin{flalign*}
+        & E[\bar{X}] = \frac{1}{\lambda} = \tau(\lambda)\\
+        & Var(\bar{X}) = \frac{[\tau'(\theta)]^2}{nI_X(\lambda)} = \frac{\frac{1}{\lambda^4}}{nI_X(\lambda)}\Leftrightarrow\\
+        & I_X(\lambda) = \frac{1}{\lambda^2}
+    \end{flalign*}
+}
+
+Once we determine that $T$ is the most efficient estimator of $\tau(\theta)\Rightarrow E[T] = \tau(\theta); Var(T) = \frac{[\tau'(\theta)]^2}{nI_X(\theta)}$
+which may allow us to determine $I_X(\lambda)$ if we know $Var(T)$ or vice versa.
+
+\subsection{Uniformly minimum-variance unbiased estimation}
+
+\dfn[]{Uniformly minimum-variance unbiased estimator (UMVUE)}{
+    Let $T$ be an \textbf{unbiased} estimator of $\tau(\theta)$. If for any other unbiased estimator of $\tau(\theta)$, $W$, we have
+    \begin{equation*}
+        Var(T|\theta) \leq Var(W|\theta),\quad \forall\theta\in\Theta
+    \end{equation*}
+    then $T$ is the so called uniformly minimum-variance unbiased estimator of $\tau(\theta)$, or UMVUE.
+}
+
+\thm[]{Rao-Blackwell}{
+    Let $T$ be a \textbf{sufficient} statistic for $\theta$ and $U$ an \textbf{unbiased} estimator of $\tau(\theta)$. 
+    Then $E[U|T]$ is an \textbf{unbiased} estimator of $\tau(\theta)$ with variance that is never superior to that of $U$.
+    The two variances coincide if and only if $U$ is a function of $T$.
+}
+\nt{The process of computing $E[U|T]$ is called Rao-Blackwellization.}
+
+\begin{proof}
+    $U$ unbiased estimator of $\tau(\theta)$, $T$ sufficient statistic.
+    \begin{flalign*}
+        & E[U|T] \text{ is a statistic}\\
+        & E[U|T=t] = \int_x U(\tdx)\underbrace{f(\tdx|t)}_{\text{doesn't depend on $\theta$ because $T$ sufficient}}dx\\
+        & E[E[U|T]] = E[U] = \tau(\theta) \Rightarrow E[U|T]\text{ unbiased estimator of }\tau(\theta)\\
+        & Var(U) = \underbrace{E[Var(U|T)]}_{\geq 0}+Var(E[U|T])\\
+        & Var(U)\geq Var(E[U|T])\\
+        & Var(U) = Var(E[U|T]) \Leftrightarrow E[Var(U|T)] = 0 \Leftrightarrow U\text{ is a function of }T
+    \end{flalign*}
+\end{proof}
+
+\ex[]{Rao-Blackwell : Normal}{
+    $X_1,\ldots,X_n\sim n(\mu,1),\quad \tau(\theta) = \mu^2+1$\\
+
+    We know that $U = \frac{\sum X_i^2}{n} = S^2+\bar{X}^2$ is an unbaised estimator of $\tau(\mu)$
+    \begin{flalign*}
+        & E[U] = \mu^2 + 1\\
+        & \bar{X} \text{ is sufficient for }\mu\\
+        & E[U|\bar{X}] = E[S^2+\bar{X}^2|\bar{X}] = E[S^2|\bar{X}] + E[\bar{X}^2|\bar{X}]\\
+        & \bar{X}\ind S^2 \Rightarrow E[S^2|\bar{X}] = E[S^2] = \frac{n-1}{n}\times 1\\
+        & \text{Also, }E[\bar{X}^2|\bar{X}] = \bar{X}^2\\
+        & \Rightarrow E[U|\bar{X}] = \frac{n-1}{n}+\bar{X}^2
+    \end{flalign*}
+}
+
+The UMVUE should be a \textbf{function of a sufficient statistic}. 
+When we Rao-Blackwellize an unbiased estimator, we do not obtain necessarily the UMVUE because there is always the possibility that if we had started with another unbaised estimator
+we could haveobtained a smaller variance.
+That cannot happen if we \textbf{start with a sufficient and complete statistic}:
+Let $g(T) = E[U|T]$ and $g^*(T)$ another unbiased estimator which is also a function of $T$. The \textbf{completeness} of $T$ implies that $g(T) = g^*(T)$.
+
+\thm[]{Lehmann-Scheffé}{
+    If the statistical model admits a \textbf{sufficient and complete} statistic $T$ and there is at least an \textbf{unbiased} estimator of $\tau(\theta)$
+    then there is an UMVUE for $\tau(\theta)$ that is unique and a function of $T$.\\
+
+    Startegies to find UMVUEs in models admitting sufficient and complete statistic:
+    \begin{enumerate}
+        \item Obtain an unbiased estimator and Rao-Blackwellize it using the sufficient and complete statistic.
+        \begin{itemize}
+            \item Find $U: E[U] = \tau(\theta)$
+            \item Find $T$ sufficient and complete $\to$ compute $E[U|T]$
+        \end{itemize}
+        \item Directly identify an unbiased estimator that is a function of a complete and sufficient statistic.
+        \begin{itemize}
+            \item Find $T$ sufficient and complete
+            \item Find $g(T)$ such that $E[g(T)] = \tau(\theta)$
+        \end{itemize}
+    \end{enumerate}
+}
+
+\ex[]{Lehmann-Scheffé : Poisson}{
+    Conditions:
+    \begin{itemize}
+        \item $X_1\ldots,X_n|\theta \sim Po(\theta)$
+        \item $Po(\theta)$ is a member of the 1-parameter exponential family with $\alpha = \ln\theta\in\bbR$
+        \item $T = \sum x_i$ is sufficient and complete
+    \end{itemize}
+    Using method 1:
+    \begin{align*}
+        U = I_{\{0\}}(X_1) & \Rightarrow E[U] = P(X_1 = 0) = e^{-\theta}\\
+        E[U|T=t] & = E[I_{\{0\}}(X_1)|T=t] = P(X_1 = 0|T=t) = \frac{P(X-1=0; \sum_{i=2}^{n}X_1=t)}{P(T=t)} = \frac{P(X_1=0)P(\sum_{i=2}^{n}X_1=t)}{P(T=t)}\\
+        & \left[\begin{cases}
+            \sum_{i=2}^{n}x_i\sim Po((n-1)\theta)\\
+            T\sim Po(n\theta)
+        \end{cases}\right] \\
+        & = \frac{e^{-\theta}\frac{e^{-(n-1)\theta}[(n-1)\theta]^t}{t!}}{e^{-n\theta}\frac{(n\theta)^t}{t!}}=\left(\frac{n-1}{n}\right)^t \rightarrow \text{ UMVUE}
+    \end{align*}
+    Using method 2:
+    \begin{flalign*}
+        & E[g(T)] = \sum_{t=0}^{\infty} g(T) e^{-n\theta}\frac{(n\theta)^t}{t!} = e^{\theta},\quad \forall \theta>0\Leftrightarrow\\
+        & \sum_{t=0}^{\infty} g(T)\frac{(n\theta)^t}{t!} = e^{n\theta}e^{-\theta},\quad \forall \theta>0\Leftrightarrow\\
+        & \sum_{t=0}^{\infty} g(T) n^t \frac{\theta^t}{t!} = e^{(n-1)\theta},\quad \forall \theta>0\Leftrightarrow (1)\\
+        & \sum_{t=0}^{\infty} g(T) n^t \frac{\theta^t}{t!} = \sum_{t=0}^{\infty}(n-1)^t\frac{\theta^t}{t!},\quad \forall \theta>0 \Rightarrow\\
+        & g(t)n^t = (n-1)^t \Leftrightarrow g(t) = \left(\frac{n-1}{n}\right)^t\to \text{ UMVUE}
+    \end{flalign*}
+    (1):
+    \begin{flalign*}
+        & e^x = \sum_{j=0}^{\infty}\frac{x^j}{j!}\\
+        & e^{(n-1)\theta} = \sum_{t=0}^{\infty}\frac{[(n-1)\theta]^t}{t!} = \sum_{t=0}^{\infty}(n-1)^t\frac{\theta^t}{t!}
+    \end{flalign*}
+}
+
+Relating efficiency and UMVU. If the model is \textbf{regular} and there exists a \textbf{most efficient estimator} for $\tau(\theta)$, then this estimator is necessarily the \textbf{UMVUE}.
+The variance of the UMVUE will not necessarily be equal to the CRLB.
+If the model is regular, there may not exist most efficient estimators, in this case the UMVUE will have a variance strictly larger than the CRLB.
+The \textbf{UMVU criterion does not depend on regularity conditions}, and hence, if theses are not met, the variance of the UMVUE may be smaller than the CRLB defined as if the model were regular.
+
+\subsection{Mean square error}
+This is used to compare unbiased estimators in terms of the \textbf{dispersion} of their distribution around $\tau(\theta)$.
+\dfn[]{Mean square error}{
+    The mean square error of an estimator $T$ of $\tau(\theta)$ is 
+    \begin{equation*}
+        MSE(T) = E_{\theta}[(T-\tau(\theta))^2]
+    \end{equation*}
+}
+
+Couple \textbf{remarks}:
+\begin{itemize}
+    \item $T$ will be superior to $T^*$ in mean squared error in the estimation of $\tau(\theta)$ if $MSE(T\leq MSE(T^*)),\;\forall\theta$.
+    \item Markov inequality indicates that $P(|T-\tau(\theta)|>\epsilon)\leq \frac{MSE(T)}{\epsilon^2}$
+    \item We have $MSE(T) = VAR_{\theta}(T) + [b(T)]^2$
+    \begin{proof}
+        \begin{align*}
+            E_{\theta}[(T-\tau(\theta))^2] & = E[(T-\mu+\mu-\tau(\theta))^2] = E[(T_\mu)^2]\\
+            & = E[(T-\mu)^2+2(\mu-\tau(\theta))(T-\mu)+(\mu-\tau(\theta))^2]\\
+            & = Var(T) + 0 + (\mu+\tau(\theta))^2 = Var(T)+b_T^2
+        \end{align*}
+    \end{proof}
+\end{itemize}
+
+\ex[]{MSE : Normal}{
+    $X\sim N(\mu,\sigma^2)$
+    \begin{flalign*}
+        & E[S'^2] = \sigma^2\\
+        & E[S^2] = \frac{n-1}{n}\sigma^2\\
+        & \frac{2\sigma^2}{n} = Var(S'^2) > MSE(S^2) = \frac{2\sigma^2}{n}-\frac{3\sigma^2}{n^2}
+    \end{flalign*}
+    $\Rightarrow$ According to the MSE criterion, $S^2$ is better than $S'^2$.
+}
+
+\subsection{Consistency}
+
+Consistency looks at the behavior of the sampling distribution of an estimator as $n\to +\infty$.
+\dfn[]{Consistency}{
+    Let $T_n = T(X_1,\ldots, X_n)$. The estimator $T_n$ is said to be a (weakly) consistent estimator of $\tau(\theta)$ if, for all $\theta\in\Theta$,
+    \begin{equation*}
+        \forall \epsilon>0\quad \lim_{n\to+\infty}P(|T_n-\tau(\theta)|>\epsilon) = 0
+    \end{equation*}
+    that is, if, for all $\theta\in\Theta, T_n\xrightarrow{P}\tau(\theta)$.
+}
+\dfn[]{Mean-square consistency}{
+    The estimator $T_n$ is said to be a mean-square consistent estimator of $\tau(\theta)$ if, for all $\theta\in\Theta$,
+    \begin{equation*}
+        \lim_{n\to+\infty}E_{\theta}[(T_n-\tau(\theta))^2] = 0
+    \end{equation*}
+    that is, if, for all $\theta\in\Theta, T_n\xrightarrow{m.s.}\tau(\theta)$.
+}
+
+Couple \textbf{remarks}:
+\begin{itemize}
+    \item From the Markov inequality, we know that mean-square convergence implies convergence in probability, so mean-square consistency implies weak consistency.
+    \item Since $E_{\theta}[(T_n-\tau(\theta))^2] = MSE(T_n) = Var(T_n) + [b(T)]^2$, a \textbf{sufficient} condition for weak sonsistency of $T_n$ is that 
+    \begin{gather*}
+        \lim_{n\to+\infty}E[T_n] = \tau(\theta)\\
+        \text{and}\\
+        \lim_{n\to+\infty}Var[T_n] = 0
+    \end{gather*}
+    \item Consistency is not a very restrictive property. It is useful to exclude estimators though.
+\end{itemize}
+
+
+
+
+
+
+
+%\dfn{Definition Topic}{Definition Statement}
+%\thm{Theorem Name}{Theorem Statement}
+%\cor[cori]{Corollary Name}{Corollary Statement}
+%\lem{Lemma Name}{Lemma Statement}
+%\clm{Claim Name}{Claim Statement}
+%\ex{Example Name}{Example explained}
+%\opn{Open Question Name}{Question Statement}
+%\pr{Question Name}{Question Statement}
+%\nt{Special Note}
+%\wc{Wrong Concept topic}{Explanation}
+%\proof{Proof Idea}{}
