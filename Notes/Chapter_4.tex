@@ -364,8 +364,182 @@ Couple \textbf{remarks}:
     \item Consistency is not a very restrictive property. It is useful to exclude estimators though.
 \end{itemize}
 
+\section{Estimation Methods}
 
+\subsection{Method of moments}
 
+The idea is to \textbf{estimate population moments by their corresponding sample moments}.
+Let $\theta = (\theta_1,\ldots,\theta_k)$ be a vector of unknown parameters of the population, $\mu' = E[X^r]$ will necessarily be a function of $\theta: \mu_r' = \psi_r(\theta)$.
+Considering the corresponding sample moments $M'_r = \sum_{i=1}^{n}\frac{X_i^r}{n}$ and form the system of equations $M'_r = \psi_r(\theta)$.
+The solution to this equation determines a methods of moments estimator of $\theta: (\phi_r(X_1,\ldots,X_n), r = 1,\ldots,k)$.
+
+\nt{Recall the close relationship between the sample moments and the raw moemtns in the asymptotic sense.}
+
+\ex[]{A method of moment : Normal}{
+    $X_1,\ldots,X_n\sim N(\mu,\sigma^2)$
+    \begin{flalign*}
+        & \theta = (\theta_1,\theta_2) = (\mu, \sigma^2)\\
+        & \begin{cases}
+            \mu'_1 = \mu = \theta_1 \\ \sigma^2 = \mu'_2 - (\mu'_1)^2
+        \end{cases} \Leftrightarrow \begin{cases}
+            \mu'_1 = \mu = \theta_1 \\ \mu'_2 = \sigma^2 + \mu^2 = \theta_1 + (\theta_2)^2
+        \end{cases}\\
+        & \begin{cases}
+            M'_1 = \mu \\ M'_2 = \sigma^2 - \mu^2
+        \end{cases} \Leftrightarrow \begin{cases}
+            \mu = M'_1 \\ \sigma^2 = M'_2 - (M'_1)^2 = S^2
+        \end{cases} \Rightarrow \begin{cases}
+            \tilde{\mu} = \bar{X} \\ \tilde{\sigma}^2 = S^2
+        \end{cases}
+    \end{flalign*}
+    This is a method of moment, can also start with central moments as well.
+}
+\ex[]{A method of moment : Gamma}{
+    $X_1,\ldots,X_n\sim G(\alpha,\lambda)$
+    \begin{flalign*}
+        & \begin{cases}
+            \mu'_1 = \frac{\alpha}{\lambda} \\ \mu'_2  - (\mu'_1)^2= \frac{\alpha}{\lambda^2}
+        \end{cases} \Leftrightarrow \begin{cases}
+            \mu'_1 = \frac{\alpha}{\lambda} \\ \mu'_2 - \frac{\alpha^2}{\lambda^2} = \frac{\alpha}{\lambda^2}
+        \end{cases} \Leftrightarrow \begin{cases}
+            \mu'_1 = \frac{\alpha}{\lambda} \\ \mu'_2 = \frac{\alpha}{\lambda^2} + \frac{\alpha^2}{\lambda^2}
+        \end{cases} \Leftrightarrow \begin{cases}
+            \mu'_1 = \frac{\alpha}{\lambda} \\ \mu'_2 = \frac{\alpha + \alpha^2}{\lambda^2}
+        \end{cases} \\
+        & \Downarrow\\
+        & \begin{cases}
+            M'_1 = \frac{\alpha}{\lambda} \\ M'_2 = \frac{\alpha + \alpha^2}{\lambda^2}
+        \end{cases} \Leftrightarrow \begin{cases}
+            \alpha = M'_1\lambda \\ M'_2 = \frac{M'_1\lambda + (M'_1)^2\lambda^2}{\lambda^2}
+        \end{cases} \Leftrightarrow (\cdots) \Leftrightarrow \begin{cases}
+            \alpha = M'_1\lambda \\ \lambda = \frac{M'_1}{M'_2 - (M'_1)^2}
+        \end{cases} \Leftrightarrow \begin{cases}
+            \alpha = M'_1\lambda \\ \lambda = \frac{\bar{X}}{S^2}
+        \end{cases} \Leftrightarrow \begin{cases}
+            \alpha = \frac{\bar{X}^2}{S^2} \\ \lambda = \frac{\bar{X}}{S^2}
+        \end{cases}
+    \end{flalign*}
+}
+
+The \textbf{advantages} of using the method of momentes include 1) there is always a solution and 2) there is no need to assume much, just need the moments to exist.
+The \textbf{disadvantage} arises when the support depends on the parameter as moment does not take into consideration of the support of the distribution.\\
+
+Recalling the properties of the sampling moments 
+\begin{flalign*}
+    & E[M'_r|\theta] = \mu'_r\\
+    & Var(M'_r|\theta) = \frac{[\mu'_{2r} - (\mu'_r)^2]}{n} \equiv \frac{\upsilon_{rr}}{n}\\
+    & Cov_{\theta}(M'_r, M'_s) = \frac{[\mu'_{r+s} - \mu'_r\mu'_s]}{n} \equiv \frac{\upsilon_{rs}}{n}
+\end{flalign*}
+The multivariate \textbf{central limit theorem} states that, with $M = (M'_1,\ldots,M'_k)$ and $\mu = (\mu'_1,\ldots,\mu'_k)$,
+\begin{equation*}
+    \sqrt{n}(M'-\mu) \xrightarrow{d} N_k(0, V)
+\end{equation*}
+with $V = [\upsilon_{rs}]$. 
+The method of moments estimator of $\theta$ is a function of of $M$, and its asymptotic properties can be determines using the \textbf{delta method}:
+\begin{equation*}
+    \sqrt{n}(h(M'_r) - h(\mu'_r))\xrightarrow{d} N(0, [h'(\mu_r)]^2\upsilon_{rr})
+\end{equation*}
+
+\subsection{Maximum likelihood estimator}
+
+The idea is to propose an estimate of $\theta$ that \textbf{maximizes the likelihood function}, 
+which measures how likely it is that $\theta$ gives the true value of the parameters that generated the observed data.
+Formally, the MLE of $\theta$, when it exists, is $\hat{\theta}$ such that
+\begin{equation*}
+    L(\hat{\theta}|x_1,\ldots,x_n) \geq L(\theta|x_1,\ldots,x_n)\quad \forall \theta\in\Theta
+\end{equation*}
+
+In most cases, it is easier and equivalent to find the value of $\theta$ which maximizes the log-likelihood function.
+This is done by finding the zeroes of the score function 
+\begin{equation*}
+    \frac{d}{d\theta}\ln L(\theta|x_1,\ldots,x_n) = 0
+\end{equation*}
+then verifying that the stationary point is indeed a global maximum.
+This is done by finding the Hessian and proving it's negative (concave).
+\begin{proof}
+    We know that the likelihood function is always positive. And the function $\ln x$ is an increasing function.
+    $\Rightarrow$ Value of $\theta$ that maximizes $L(\theta|\tdx)$ is the value of $\theta$ that maximizes $\ln L(\theta|\tdx)$
+    \begin{equation*}
+        L(\theta|\tdx) \propto \sum_{i=1}^{n} f(x_i|\theta) \Rightarrow \ln L(\theta|\tdx) = c + \sum_{i=1}^{n} \ln f(x_i|\theta)
+    \end{equation*}
+\end{proof}
+
+The MLE may not be unique (case of Normal distribution), and in many cases there will not be closed form expression for the estimate, in which case we have to resort to numerical methods.
+
+\ex[]{MLE : Poisson}{
+    $X_1\ldots,X_n\sim Po(\lambda),\; \lambda>0$
+    \begin{flalign*}
+        & L(\lambda|\tdx) \propto e^{-n\lambda}\lambda^{\sum x_i} \Rightarrow \ln L = c - n\lambda + \sum x_i\ln \lambda\\
+        & S(\lambda|\tdx) = \frac{\partial \ln L}{\partial \lambda} = -n + \frac{\sum x_i}{\lambda}\\
+        & S(\lambda|\tdx) = 0 \Leftrightarrow  -n + \frac{\sum x_i}{\lambda} = 0 \Leftrightarrow \lambda = \bar{x}\\
+        & \frac{\partial^2\ln L}{\partial \lambda^2} = \frac{-\sum x_i}{\lambda^2} < 0 \Rightarrow \text{maximum}\Rightarrow \hat{\lambda} = \bar{x}
+    \end{flalign*}
+}
+\ex[]{MLE : Gamma}{
+    $X_1\ldots,X_n\sim G(\alpha,\lambda),\; \lambda\text{ is known}$
+    \begin{flalign*}
+        & L(\alpha|\tdx) \propto \prod_{i=1}^{n}\frac{\lambda^\alpha}{\Gamma(\alpha)}x_i^{\alpha-1}e^{-\lambda} \propto \frac{\lambda^{n\alpha}}{(\Gamma(\alpha))^n}\left(\prod_{i=1}^{n}x_i\right)^\alpha\\
+        & \ln L(\alpha|\tdx) = c(\lambda,\tdx) + n\alpha\ln\lambda - n\ln\Gamma(\alpha) + \alpha\sum\ln x_i\\
+        & S(\alpha|\tdx) = n\ln\lambda - n\frac{\Gamma'(\alpha)}{\Gamma(\alpha)} + \sum\ln x_i\\
+        & S(\alpha|\tdx) = 0 \Leftrightarrow n\ln\lambda - n\psi(\alpha) + \sum\ln x_i \Rightarrow \text{needs to be solved numerically}
+    \end{flalign*}
+}
+
+\textbf{Properties} of the MLE:
+\begin{itemize}
+    \item \textbf{Invariance}: If $\hat{\theta}$ is the MLE of $\theta$, and $\tau$ is a one-to-one function of $\theta$, then $\tau(\hat{\theta})$ is the MLE of $\tau(\theta)$. 
+    This can be generalized to situations where $\tau(\cdot)$ is not one-to-one as well, as long as it's reasonable.
+    \item If $T$ is \textbf{sufficient} and there is a MLE of $\theta$, then this estimator is a function of $T$.
+    \begin{proof}
+        If sufficient then 
+        \begin{flalign*}
+            & L(\theta|\tdx) \propto f(\tdx|\theta) = g(T(\tdx);\theta)h(\tdx)\\
+            & \ln L(\theta|\tdx) = c(\tdx) + \ln g(T(\tdx);\theta)\\
+            & \frac{\partial\ln L}{\partial\theta} = \frac{\partial g(T(\tdx);\theta)}{\partial\theta} = 0
+        \end{flalign*}
+        The solution to this equation will be a function of $T(\tdx)$
+    \end{proof}
+    \item The \textbf{most efficient} estimator of $\theta$, if it exists, is also the MLE of $\theta$.
+    \begin{proof}
+        If there is a most efficient estimator, then 
+        \begin{flalign*}
+            & S(\theta|\tdx) = a(\theta)[T(\tdx) - \theta]\\
+            & S(\theta|\tdx) = 0 \Leftrightarrow \theta = T(\tdx)
+        \end{flalign*}
+        The MLE is the most efficient estimator of $\theta$.
+    \end{proof}
+    \nt{
+        If I've found the most efficient estimator, no need to find the MLE becuase they're the same.
+        But finding the MLE first then saying it's the most efficient estimator is wrong.
+    }
+    \item Under regularity conditions, the MLE of $\theta$ satisfies
+    \begin{equation*}
+        \sqrt{n}(\hat{\theta}-\theta) \xrightarrow{d} N(0, [I_X(\theta)]^{-1})
+    \end{equation*}
+    It is possible to replace $I_{X_1,\ldots,X_n}(\theta)$ either by \begin{itemize}
+        \item The Fisher information evaluated at MLE: $nI_X(\hat{\theta})$
+        \item The observed Fisher information: $H(\theta) = -\frac{\partial^2}{\partial\theta^2}\ln L(\hat{\theta}|X_1,\ldots,X_n)$
+    \end{itemize}
+    \item Above results combined show that \textbf{MLE is BAN}( Best Asymptotically Normal) and is consistent and asymptotically most efficient.
+    \begin{proof}
+        Proof of consistency,
+        \begin{flalign*}
+            & \sqrt{n}(\hat{\theta}-\theta) \xrightarrow{d} N(0, [I_X(\theta)]^{-1})\\
+            & \Downarrow a_n(T_n-\theta)\xrightarrow{d} T \Rightarrow T_n\xrightarrow{p}\theta\\
+            & \hat{\theta}\xrightarrow{p} \theta \Rightarrow \hat{\theta} \text{ is consistent}
+        \end{flalign*}
+        Asymptotic variance of $\hat{\theta} = \frac{1}{nI_X(\theta)} =$ CRLB under regularity conditions.
+        \begin{flalign*}
+            & \ln L(\theta|\tdx) = \sum\ln f(x_i|\theta)\\
+            & S(\theta|\tdx) = \sum S(\theta|X_i)\\
+            & S(\theta|\tdx) = \underbrace{S(\hat{\theta}|\tdx)}_{=0} + (\hat{\theta} - \theta)\frac{\partial S}{\partial \theta} + R \Rightarrow\text{1st order Taylor Expansion}\\
+            & S(\theta|\tdx) = (\hat{\theta} - \theta)\frac{\partial S}{\partial \theta}\\
+            & \downarrow \text{sum of iid r.v.}\\
+            & E[S(\theta|\tdx)] = 0\\
+            & E\left[-\frac{\partial S}{\partial\theta}\right] = I_{\tdx}(\theta)
+        \end{flalign*}
+    \end{proof}
+\end{itemize}
 
 
 
